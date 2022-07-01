@@ -1,0 +1,88 @@
+{
+    "full_screen": "yes",
+    "language": [
+        {
+            "Chinese": "数据库服务器",
+            "English": "DB Server",
+            "Korean": "",
+            "key": "db_server"
+        },
+        {
+            "Chinese": "用户",
+            "English": "User",
+            "Korean": "",
+            "key": "user"
+        },
+        {
+            "Chinese": "密码",
+            "English": "Password",
+            "Korean": "",
+            "key": "password"
+        },
+        {
+            "Chinese": "Charset",
+            "English": "Charset",
+            "Korean": "",
+            "key": "charset"
+        },
+        {
+            "Chinese": "端口",
+            "English": "Port",
+            "Korean": "",
+            "key": "port"
+        },
+        {
+            "Chinese": "数据库名称",
+            "English": "DB Name",
+            "Korean": "",
+            "key": "db_name"
+        },
+        {
+            "Chinese": "更新间隔",
+            "English": "Refresh Interval",
+            "Korean": "",
+            "key": "refresh_interval"
+        },
+        {
+            "Chinese": "全屏",
+            "English": "Full Screen",
+            "Korean": "",
+            "key": "full_screen"
+        },
+        {
+            "Chinese": "保存",
+            "English": "Save Changes",
+            "Korean": "",
+            "key": "save_changes"
+        },
+        {
+            "Chinese": "关闭选项窗",
+            "English": "Close Option",
+            "Korean": "",
+            "key": "close_option"
+        },
+        {
+            "Chinese": "关闭程序",
+            "English": "Exit Program",
+            "Korean": "",
+            "key": "exit_program"
+        }
+    ],
+    "mysql": {
+        "charset": "utf-8",
+        "db": "cnt_demo",
+        "host": "127.0.0.1",
+        "password": "13579",
+        "port": "3306",
+        "user": "rt_user"
+    },
+    "ref_end_time": {
+        "hour": 18,
+        "min": 0
+    },
+    "ref_start_time": {
+        "hour": 4,
+        "min": 0
+    },
+    "refresh_interval": 2
+}

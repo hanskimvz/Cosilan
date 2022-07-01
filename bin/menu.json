@@ -1,0 +1,829 @@
+
+[
+    {
+        "page": "main_menu",
+        "frame": "split_line",
+        "depth": 0,
+        "pos_x": 0,
+        "pos_y": 0,
+        "body": {
+            "id": "split_line",
+            "href": "",
+            "icon": "",
+            "lang_key": "Main"
+        },
+        "flag": "y"
+    },
+    {
+        "page": "main_menu",
+        "frame": "dashboard",
+        "depth": 0,
+        "pos_x": 1,
+        "pos_y": 0,
+        "body": {
+            "id": "dashboard",
+            "href": "\/?fr=dashboard",
+            "icon": "monitor",
+            "lang_key": "dashboard"
+        },
+        "flag": "y"
+    },
+    {
+        "page": "main_menu",
+        "frame": "footfall",
+        "depth": 0,
+        "pos_x": 2,
+        "pos_y": 0,
+        "body": {
+            "id": "footfall",
+            "href": "#footfall",
+            "icon": "users",
+            "lang_key": "footfall"
+        },
+        "flag": "y"
+    },
+    {
+        "page": "main_menu",
+        "frame": "dataGlunt",
+        "depth": 0,
+        "pos_x": 2,
+        "pos_y": 1,
+        "body": {
+            "id": "dataGlunt",
+            "href": "\/?fr=dataGlunt",
+            "icon": "",
+            "lang_key": "dataglunt"
+        },
+        "flag": "y"
+    },
+    {
+        "page": "main_menu",
+        "frame": "latestFlow",
+        "depth": 0,
+        "pos_x": 2,
+        "pos_y": 2,
+        "body": {
+            "id": "latestFlow",
+            "href": "\/?fr=latestFlow",
+            "icon": "",
+            "lang_key": "latestflow"
+        },
+        "flag": "y"
+    },
+    {
+        "page": "main_menu",
+        "frame": "trendAnalysis",
+        "depth": 0,
+        "pos_x": 2,
+        "pos_y": 3,
+        "body": {
+            "id": "trendAnalysis",
+            "href": "\/?fr=trendAnalysis",
+            "icon": "",
+            "lang_key": "trendanalysis"
+        },
+        "flag": "y"
+    },
+    {
+        "page": "main_menu",
+        "frame": "advancedAnalysis",
+        "depth": 0,
+        "pos_x": 2,
+        "pos_y": 4,
+        "body": {
+            "id": "advancedAnalysis",
+            "href": "\/?fr=advancedAnalysis",
+            "icon": "",
+            "lang_key": "advancedanalysis"
+        },
+        "flag": "y"
+    },
+    {
+        "page": "main_menu",
+        "frame": "promotionAnalysis",
+        "depth": 0,
+        "pos_x": 2,
+        "pos_y": 5,
+        "body": {
+            "id": "promotionAnalysis",
+            "href": "\/?fr=promotionAnalysis",
+            "icon": "",
+            "lang_key": "promotionanalysis"
+        },
+        "flag": "y"
+    },
+    {
+        "page": "main_menu",
+        "frame": "brandOverview",
+        "depth": 0,
+        "pos_x": 2,
+        "pos_y": 6,
+        "body": {
+            "id": "brandOverview",
+            "href": "\/?fr=brandOverview",
+            "icon": "",
+            "lang_key": "brandoverview"
+        },
+        "flag": "y"
+    },
+    {
+        "page": "main_menu",
+        "frame": "weatherAnalysis",
+        "depth": 0,
+        "pos_x": 2,
+        "pos_y": 7,
+        "body": {
+            "id": "weatherAnalysis",
+            "href": "\/?fr=weatherAnalysis",
+            "icon": "",
+            "lang_key": "weatheranalysis"
+        },
+        "flag": "y"
+    },
+    {
+        "page": "main_menu",
+        "frame": "kpi",
+        "depth": 0,
+        "pos_x": 3,
+        "pos_y": 0,
+        "body": {
+            "id": "kpi",
+            "href": "\/?fr=kpi",
+            "icon": "aperture",
+            "lang_key": "kpioverview"
+        },
+        "flag": "y"
+    },
+    {
+        "page": "main_menu",
+        "frame": "dataCompare",
+        "depth": 0,
+        "pos_x": 4,
+        "pos_y": 0,
+        "body": {
+            "id": "dataCompare",
+            "href": "#dataCompare",
+            "icon": "sliders",
+            "lang_key": "datacompare"
+        },
+        "flag": "y"
+    },
+    {
+        "page": "main_menu",
+        "frame": "compareByTime",
+        "depth": 0,
+        "pos_x": 4,
+        "pos_y": 1,
+        "body": {
+            "id": "compareByTime",
+            "href": "\/?fr=compareByTime",
+            "icon": "",
+            "lang_key": "comparebytime"
+        },
+        "flag": "y"
+    },
+    {
+        "page": "main_menu",
+        "frame": "compareByPlace",
+        "depth": 0,
+        "pos_x": 4,
+        "pos_y": 2,
+        "body": {
+            "id": "compareByPlace",
+            "href": "\/?fr=compareByPlace",
+            "icon": "",
+            "lang_key": "comparebyplace"
+        },
+        "flag": "y"
+    },
+    {
+        "page": "main_menu",
+        "frame": "trafficDistribution",
+        "depth": 0,
+        "pos_x": 4,
+        "pos_y": 3,
+        "body": {
+            "id": "trafficDistribution",
+            "href": "\/?fr=trafficDistribution",
+            "icon": "",
+            "lang_key": "trafficdistribution"
+        },
+        "flag": "y"
+    },
+    {
+        "page": "main_menu",
+        "frame": "compareByLabel",
+        "depth": 0,
+        "pos_x": 4,
+        "pos_y": 4,
+        "body": {
+            "id": "compareByLabel",
+            "href": "\/?fr=compareByLabel",
+            "icon": "",
+            "lang_key": "comparebylabel"
+        },
+        "flag": "y"
+    },
+    {
+        "page": "main_menu",
+        "frame": "heatmap",
+        "depth": 0,
+        "pos_x": 5,
+        "pos_y": 0,
+        "body": {
+            "id": "heatmap",
+            "href": "\/?fr=heatmap",
+            "icon": "map-pin",
+            "lang_key": "heatmap"
+        },
+        "flag": "y"
+    },
+    {
+        "page": "main_menu",
+        "frame": "agegender",
+        "depth": 0,
+        "pos_x": 6,
+        "pos_y": 0,
+        "body": {
+            "id": "agegender",
+            "href": "\/?fr=agegender",
+            "icon": "slack",
+            "lang_key": "genderandage"
+        },
+        "flag": "y"
+    },
+    {
+        "page": "main_menu",
+        "frame": "macsniff",
+        "depth": 0,
+        "pos_x": 7,
+        "pos_y": 0,
+        "body": {
+            "id": "macsniff",
+            "href": "\/?fr=macsniff",
+            "icon": "wifi",
+            "lang_key": "macsniff"
+        },
+        "flag": "y"
+    },
+    {
+        "page": "main_menu",
+        "frame": "report",
+        "depth": 0,
+        "pos_x": 8,
+        "pos_y": 0,
+        "body": {
+            "id": "report",
+            "href": "#report",
+            "icon": "book-open",
+            "lang_key": "report"
+        },
+        "flag": "y"
+    },
+    {
+        "page": "main_menu",
+        "frame": "summary",
+        "depth": 0,
+        "pos_x": 8,
+        "pos_y": 1,
+        "body": {
+            "id": "summary",
+            "href": "\/?fr=summary",
+            "icon": "",
+            "lang_key": "summary"
+        },
+        "flag": "y"
+    },
+    {
+        "page": "main_menu",
+        "frame": "standard",
+        "depth": 0,
+        "pos_x": 8,
+        "pos_y": 2,
+        "body": {
+            "id": "standard",
+            "href": "\/?fr=standard",
+            "icon": "",
+            "lang_key": "standard"
+        },
+        "flag": "y"
+    },
+    {
+        "page": "main_menu",
+        "frame": "premium",
+        "depth": 0,
+        "pos_x": 8,
+        "pos_y": 3,
+        "body": {
+            "id": "premium",
+            "href": "\/?fr=premium",
+            "icon": "",
+            "lang_key": "premium"
+        },
+        "flag": "y"
+    },
+    {
+        "page": "main_menu",
+        "frame": "export",
+        "depth": 0,
+        "pos_x": 8,
+        "pos_y": 4,
+        "body": {
+            "id": "export",
+            "href": "\/?fr=export",
+            "icon": "",
+            "lang_key": "export"
+        },
+        "flag": "y"
+    },
+    {
+        "page": "main_menu",
+        "frame": "split_line",
+        "depth": 0,
+        "pos_x": 9,
+        "pos_y": 0,
+        "body": {
+            "id": "split_line",
+            "href": "",
+            "icon": "",
+            "lang_key": "setting"
+        },
+        "flag": "y"
+    },
+    {
+        "page": "main_menu",
+        "frame": "sensors",
+        "depth": 0,
+        "pos_x": 10,
+        "pos_y": 0,
+        "body": {
+            "id": "sensors",
+            "href": "\/?fr=sensors",
+            "icon": "camera",
+            "lang_key": "sensors"
+        },
+        "flag": "y"
+    },
+    {
+        "page": "main_menu",
+        "frame": "sitemap",
+        "depth": 0,
+        "pos_x": 11,
+        "pos_y": 0,
+        "body": {
+            "id": "sitemap",
+            "href": "\/?fr=sitemap",
+            "icon": "map",
+            "lang_key": "sitemap"
+        },
+        "flag": "y"
+    },
+    {
+        "page": "main_menu",
+        "frame": "split_line",
+        "depth": 0,
+        "pos_x": 12,
+        "pos_y": 0,
+        "body": {
+            "id": "split_line",
+            "href": "",
+            "icon": "",
+            "lang_key": "about"
+        },
+        "flag": "y"
+    },
+    {
+        "page": "main_menu",
+        "frame": "version",
+        "depth": 0,
+        "pos_x": 13,
+        "pos_y": 0,
+        "body": {
+            "id": "version",
+            "href": "\/?fr=version",
+            "icon": "pen-tool",
+            "lang_key": "version"
+        },
+        "flag": "y"
+    },
+    {
+        "page": "main_menu",
+        "frame": "feedback",
+        "depth": 0,
+        "pos_x": 14,
+        "pos_y": 0,
+        "body": {
+            "id": "feedback",
+            "href": "\/?fr=feedback",
+            "icon": "phone-call",
+            "lang_key": "feedback"
+        },
+        "flag": "y"
+    },
+    {
+        "page": "admin_menu",
+        "frame": "account",
+        "depth": 0,
+        "pos_x": 0,
+        "pos_y": 0,
+        "body": {
+            "id": "account",
+            "href": ".\/admin.php?fr=account",
+            "icon": "fa-id-card",
+            "lang_key": "account"
+        },
+        "flag": "y"
+    },
+    {
+        "page": "admin_menu",
+        "frame": "device_tree",
+        "depth": 0,
+        "pos_x": 1,
+        "pos_y": 0,
+        "body": {
+            "id": "device_tree",
+            "href": ".\/admin.php?fr=device_tree",
+            "icon": "fa-sitemap",
+            "lang_key": "devicetree"
+        },
+        "flag": "y"
+    },
+    {
+        "page": "admin_menu",
+        "frame": "list_device",
+        "depth": 0,
+        "pos_x": 2,
+        "pos_y": 0,
+        "body": {
+            "id": "list_device",
+            "href": ".\/admin.php?fr=list_device",
+            "icon": "fa-camera",
+            "lang_key": "camera"
+        },
+        "flag": "y"
+    },
+    {
+        "page": "admin_menu",
+        "frame": "counter_label_set",
+        "depth": 0,
+        "pos_x": 3,
+        "pos_y": 0,
+        "body": {
+            "id": "counter_label_set",
+            "href": ".\/admin.php?fr=counter_label_set",
+            "icon": "fa-clock",
+            "lang_key": "counterlabel"
+        },
+        "flag": "y"
+    },
+    {
+        "page": "admin_menu",
+        "frame": "database",
+        "depth": 0,
+        "pos_x": 4,
+        "pos_y": 0,
+        "body": {
+            "id": "database",
+            "href": "#database",
+            "icon": "fa-database",
+            "lang_key": "database"
+        },
+        "flag": "y"
+    },
+    {
+        "page": "admin_menu",
+        "frame": "split_line",
+        "depth": 0,
+        "pos_x": 4,
+        "pos_y": 1,
+        "body": {
+            "id": "split_line",
+            "href": "",
+            "icon": "",
+            "lang_key": "Custom DB"
+        },
+        "flag": "y"
+    },
+    {
+        "page": "admin_menu",
+        "frame": "counting",
+        "depth": 0,
+        "pos_x": 4,
+        "pos_y": 2,
+        "body": {
+            "id": "counting",
+            "href": ".\/admin.php?fr=database&db=counting",
+            "icon": "fa-user-plus",
+            "lang_key": "Counting"
+        },
+        "flag": "y"
+    },
+    {
+        "page": "admin_menu",
+        "frame": "agegender",
+        "depth": 0,
+        "pos_x": 4,
+        "pos_y": 3,
+        "body": {
+            "id": "agegender",
+            "href": ".\/admin.php?fr=database&db=agegender",
+            "icon": "fa-venus-mars",
+            "lang_key": "Age Gender"
+        },
+        "flag": "y"
+    },
+    {
+        "page": "admin_menu",
+        "frame": "heatmap",
+        "depth": 0,
+        "pos_x": 4,
+        "pos_y": 4,
+        "body": {
+            "id": "heatmap",
+            "href": ".\/admin.php?fr=database&db=heatmap",
+            "icon": "fa-street-view",
+            "lang_key": "Heatmap"
+        },
+        "flag": "y"
+    },
+    {
+        "page": "admin_menu",
+        "frame": "weather",
+        "depth": 0,
+        "pos_x": 4,
+        "pos_y": 5,
+        "body": {
+            "id": "weather",
+            "href": ".\/admin.php?fr=database&db=weather",
+            "icon": "fa-cogs",
+            "lang_key": "Weather"
+        },
+        "flag": "y"
+    },
+    {
+        "page": "admin_menu",
+        "frame": "split_line",
+        "depth": 0,
+        "pos_x": 4,
+        "pos_y": 6,
+        "body": {
+            "id": "split_line",
+            "href": "",
+            "icon": "",
+            "lang_key": "Common DB"
+        },
+        "flag": "y"
+    },
+    {
+        "page": "admin_menu",
+        "frame": "params",
+        "depth": 0,
+        "pos_x": 4,
+        "pos_y": 7,
+        "body": {
+            "id": "params",
+            "href": ".\/admin.php?fr=database&db=params",
+            "icon": "fa-cogs",
+            "lang_key": "params"
+        },
+        "flag": "y"
+    },
+    {
+        "page": "admin_menu",
+        "frame": "counting_common",
+        "depth": 0,
+        "pos_x": 4,
+        "pos_y": 8,
+        "body": {
+            "id": "counting_common",
+            "href": ".\/admin.php?fr=database&db=counting_common",
+            "icon": "fa-user-plus",
+            "lang_key": "Counting"
+        },
+        "flag": "y"
+    },
+    {
+        "page": "admin_menu",
+        "frame": "event_counting_common",
+        "depth": 0,
+        "pos_x": 4,
+        "pos_y": 9,
+        "body": {
+            "id": "event_counting_common",
+            "href": ".\/admin.php?fr=database&db=event_counting_common",
+            "icon": "fa-user-plus",
+            "lang_key": "EventCounting"
+        },
+        "flag": "y"
+    },
+    {
+        "page": "admin_menu",
+        "frame": "face_thumbnail",
+        "depth": 0,
+        "pos_x": 4,
+        "pos_y": 10,
+        "body": {
+            "id": "face_thumbnail",
+            "href": ".\/admin.php?fr=database&db=face_thumbnail",
+            "icon": "fa-smile",
+            "lang_key": "Face"
+        },
+        "flag": "y"
+    },
+    {
+        "page": "admin_menu",
+        "frame": "heatmap_common",
+        "depth": 0,
+        "pos_x": 4,
+        "pos_y": 11,
+        "body": {
+            "id": "heatmap_common",
+            "href": ".\/admin.php?fr=database&db=heatmap_common",
+            "icon": "fa-street-view",
+            "lang_key": "Heatmap"
+        },
+        "flag": "y"
+    },
+    {
+        "page": "admin_menu",
+        "frame": "snapshot",
+        "depth": 0,
+        "pos_x": 4,
+        "pos_y": 12,
+        "body": {
+            "id": "snapshot",
+            "href": ".\/admin.php?fr=database&db=snapshot",
+            "icon": "fa-film",
+            "lang_key": "Snapshot"
+        },
+        "flag": "y"
+    },
+    {
+        "page": "admin_menu",
+        "frame": "sniff",
+        "depth": 0,
+        "pos_x": 4,
+        "pos_y": 13,
+        "body": {
+            "id": "sniff",
+            "href": ".\/admin.php?fr=database&db=sniff",
+            "icon": "fa-cogs",
+            "lang_key": "MacSniff"
+        },
+        "flag": "y"
+    },
+    {
+        "page": "admin_menu",
+        "frame": "access_log",
+        "depth": 0,
+        "pos_x": 4,
+        "pos_y": 14,
+        "body": {
+            "id": "access_log",
+            "href": ".\/admin.php?fr=database&db=access_log",
+            "icon": "fa-list-ol",
+            "lang_key": "Access Log"
+        },
+        "flag": "y"
+    },
+    {
+        "page": "admin_menu",
+        "frame": "language",
+        "depth": 0,
+        "pos_x": 5,
+        "pos_y": 0,
+        "body": {
+            "id": "language",
+            "href": ".\/admin.php?fr=language",
+            "icon": "fa-language",
+            "lang_key": "language"
+        },
+        "flag": "y"
+    },
+    {
+        "page": "admin_menu",
+        "frame": "message_setup",
+        "depth": 0,
+        "pos_x": 6,
+        "pos_y": 0,
+        "body": {
+            "id": "message_setup",
+            "href": ".\/admin.php?fr=message_setup",
+            "icon": "fa-comment-alt",
+            "lang_key": "messagesetup"
+        },
+        "flag": "y"
+    },
+    {
+        "page": "admin_menu",
+        "frame": "system",
+        "depth": 0,
+        "pos_x": 7,
+        "pos_y": 0,
+        "body": {
+            "id": "system",
+            "href": ".\/admin.php?fr=system",
+            "icon": "settings",
+            "lang_key": "system"
+        },
+        "flag": "y"
+    },
+    {
+        "page": "admin_menu",
+        "frame": "webpageConfig",
+        "depth": 0,
+        "pos_x": 8,
+        "pos_y": 0,
+        "body": {
+            "id": "webpageConfig",
+            "href": "#webpageConfig",
+            "icon": "file-text",
+            "lang_key": "webconfig"
+        },
+        "flag": "y"
+    },
+    {
+        "page": "admin_menu",
+        "frame": "basic",
+        "depth": 0,
+        "pos_x": 8,
+        "pos_y": 1,
+        "body": {
+            "id": "basic",
+            "href": ".\/admin.php?fr=webpageConfig&db=basic",
+            "icon": "",
+            "lang_key": "basic"
+        },
+        "flag": "y"
+    },
+    {
+        "page": "admin_menu",
+        "frame": "sidemenu",
+        "depth": 0,
+        "pos_x": 8,
+        "pos_y": 2,
+        "body": {
+            "id": "sidemenu",
+            "href": ".\/admin.php?fr=webpageConfig&db=sidemenu",
+            "icon": "",
+            "lang_key": "sidemenu"
+        },
+        "flag": "y"
+    },
+    {
+        "page": "admin_menu",
+        "frame": "dashboard",
+        "depth": 0,
+        "pos_x": 8,
+        "pos_y": 3,
+        "body": {
+            "id": "dashboard",
+            "href": ".\/admin.php?fr=webpageConfig&db=dashboard",
+            "icon": "",
+            "lang_key": "dashboardconfig"
+        },
+        "flag": "y"
+    },
+    {
+        "page": "admin_menu",
+        "frame": "analysis",
+        "depth": 0,
+        "pos_x": 8,
+        "pos_y": 4,
+        "body": {
+            "id": "analysis",
+            "href": ".\/admin.php?fr=webpageConfig&db=analysis",
+            "icon": "",
+            "lang_key": "analysis"
+        },
+        "flag": "y"
+    },
+    {
+        "page": "admin_menu",
+        "frame": "report",
+        "depth": 0,
+        "pos_x": 8,
+        "pos_y": 5,
+        "body": {
+            "id": "report",
+            "href": ".\/admin.php?fr=webpageConfig&db=report",
+            "icon": "",
+            "lang_key": "report"
+        },
+        "flag": "y"
+    },
+    {
+        "page": "admin_menu",
+        "frame": "realtime_screen",
+        "depth": 0,
+        "pos_x": 8,
+        "pos_y": 6,
+        "body": {
+            "id": "report",
+            "href": ".\/admin.php?fr=webpageConfig&db=realtime_screen",
+            "icon": "",
+            "lang_key": "realtime_screen"
+        },
+        "flag": "y"
+    }
+]

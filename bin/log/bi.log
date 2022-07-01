@@ -1,0 +1,12 @@
+INFO      2022-04-02 22:37:56,582 tlss_counting run 190 =====  Starting TLSS Counting  ===== tlss
+INFO      2022-04-02 22:37:56,584 tlss_counting run 197 [-] Socket Created(TLSS) tlss
+CRITICAL  2022-04-02 22:37:56,595 tlss_counting run 204 TLSS, Bind Failed. Error: [WinError 10048] Only one usage of each socket address (protocol/network address/port) is normally permitted tlss
+INFO      2022-04-02 22:37:57,596 active_counting start 231 starting Active Counting Service Thread-1
+INFO      2022-04-02 22:37:58,601 active_counting main_function 214 ======== Active Counting, starting 0 ======== Thread-2
+INFO      2022-04-02 22:37:58,601 proc_db start 477 Starting processing counting, heatmap, face db service Thread-1
+INFO      2022-04-02 22:37:59,610 proc_event run 55 Stating Event Push processing event
+INFO      2022-04-02 22:37:59,615 proc_event run 62 [-] Socket Created(EVENT PUSH Service) event
+CRITICAL  2022-04-02 22:37:59,622 proc_event run 69 EventCounting, Bind Failed. Error: [WinError 10048] Only one usage of each socket address (protocol/network address/port) is normally permitted event
+INFO      2022-04-02 22:38:00,617 face_det cancel 126 Stopping process Face to Age Gender Thread-1
+INFO      2022-04-02 22:38:00,618 sysdaemon start 773 Starting System Conrtol service as Auto update, reportting, Auto Backup Thread-1
+INFO      2022-04-02 22:38:02,534 startBI main_function 321 <table><tr><td>ThManager</td><td>manager</td><td>True</td><td>1648910276</td></tr><tr><td>thThreadStatusTimer</td><td>thread_status</td><td>True</td><td>10</td></tr><tr><td>ThTLSS</td><td>tlss</td><td>False</td><td>1648910276</td></tr><tr><td>ThEventPush</td><td>event</td><td>False</td><td>10</td></tr><tr><td>thActiveCountingTimer</td><td>active_count</td><td>False</td><td>1648910276</td></tr><tr><td>thFaceDetTimer</td><td>face_det</td><td>False</td><td>1648910276</td></tr><tr><td>thProcDBCustomTimer</td><td>proc_custom_db</td><td>False</td><td>1648910276</td></tr><tr><td>sysControlTimer</td><td>sys_ctrl</td><td>False</td><td>1648910276</td></tr><tr><td>mysqld</td><td>mysqld</td><td>[22080, 24496]</td><td></td></tr><tr><td>php</td><td>php</td><td>[3288, 12860]</td><td></td></tr><tr><td>nginx</td><td>nginx</td><td>[22000, 10728, 20652, 11576]</td><td></td></tr></table> Thread-1
