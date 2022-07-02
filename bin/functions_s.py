@@ -473,7 +473,12 @@ def ssdp_device(): # discover upnp devices
 		'\r\n'
 	s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
 	s.settimeout(2)
-	s.sendto(msg.encode('ASCII'),('239.255.255.250', 1900))
+	try:
+		s.sendto(msg.encode('ascii'),('239.255.255.250', 1900))
+	except:
+		s.close()
+		return dev_idx	
+
 
 	try:
 		while True: 
