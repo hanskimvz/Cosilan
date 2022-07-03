@@ -9,3 +9,12 @@ V092
 _unused
 *.sh
 bin/log
+bin/dist
+bin/build
+bin/_pychache_
+html/intranet
+html/test
+html/traffic
+html/_*.php
+
+
