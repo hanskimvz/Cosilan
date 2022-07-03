@@ -5,11 +5,25 @@ session_start();
 include ("dbconnect.php");
 // print_r($_GET);
 
+
+
+// require_once("./parsedown/Parsedown.php");
+// $Parsedown = new Parsedown();
+
+// $fp = fopen("parsedown/README.md", "r");
+// $body = fread($fp, filesize("parsedown/README.md"));
+// fclose($fp);
+
+// print $Parsedown->text($body);
+
+// echo $Parsedown->text('Hello _Parsedown_!'); # prints: <p>Hello <em>Parsedown</em>!</p>
+// echo $Parsedown->line('Hello _Parsedown_!'); # prints: Hello <em>Parsedown</em>!
+
 $sq = "select pk, code, title, regdate, last_modified, flag from paragraph";
 $rs = mysqli_query($connect, $sq);
 while ($assoc = mysqli_fetch_assoc($rs)){
     // print_r($assoc);
-    $view_href = 'view.php?code='.$assoc['code'].'';
+    $view_href = 'view_markdown.php?code='.$assoc['code'].'';
     $assoc['title'] = '<a href="'.$view_href.'" target="view_page">'.$assoc['title'].'</a>';
     if ($_SESSION['logID'] == 'hanskim') {
         $assoc['code'] = '<a href="modify.php?pk='.$assoc['pk'].'" target="modify_page">'.$assoc['code'].'</a>';

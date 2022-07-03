@@ -1,3 +1,5 @@
-D:
-cd "d:\BACKUP\PythonWorkSpace\SIDWAY_SERVER"
-python3.exe update.py
+cd bin
+python3 update.py
+cd ..
+
+pause
