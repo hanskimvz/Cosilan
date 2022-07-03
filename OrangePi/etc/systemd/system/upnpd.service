@@ -1,0 +1,20 @@
+[Unit]
+Description=Upnpd Service
+After=network.target
+#After=multi-user.target
+
+[Install]
+WantedBy=multi-user.target
+
+
+
+[Service]
+ExecStart=/usr/sbin/upnpd ppp0 eth0
+
+Restart=always
+RestartSec=60s
+RemainAfterExit=yes
+
+
+
+

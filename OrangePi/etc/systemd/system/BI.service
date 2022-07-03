@@ -1,0 +1,23 @@
+[Unit]
+Description=BI Service
+After=multi-user.target
+
+[Service]
+#Type=forking
+#PIDFile=/run/Bi.pid
+WorkingDirectory=/var/www/bin
+ExecStart=/usr/bin/python3 /var/www/bin/startBI.py
+#ExecStart="/usr/bin/python3 /var/www/bin/counting_main.py"
+#ExecStart="/usr/bin/python3 /var/www/bin/proc_db.py"
+
+
+#ExecStop=-/sbin/start-stop-daemon --quiet --stop --retry QUIT/5 --pidfile /run/BI.pid
+Restart=always
+RestartSec=60s
+RemainAfterExit=yes
+
+#KillMode=mixed
+
+
+[Install]
+WantedBy=multi-user.target
