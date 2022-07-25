@@ -2894,148 +2894,6 @@ else if ($_GET['fr'] == 'counter_label_set') {
 	// footfall.php, camera.php, export.php
 }
 
-// else if($_GET['fr'] == 'modify_floating_camera') {
-// 	print_r($_POST);
-// 	$host = $_POST['IP']; 
-// 	$port = 80; 
-// 	$waitTimeoutInSeconds = 2; 
-// 	if($fp = fsockopen($host, $port, $errCode, $errStr, $waitTimeoutInSeconds)){   
-// 	   print "OK";
-// 	   fclose($fp);
-// 	}
-// 	else {
-// 	   print "FAIL";
-// 	   return false;
-// 	} 
-
-// 	if ($_POST['mode'] == 'add_camera' && $_POST['fpk'] == 0) {
-// 		$json_str = "adding camera";
-// 		$url = 'http://'.$_POST['IP'].'/uapi-cgi/param.fcgi?action=list&group=Brand.brand,Brand.product.shortname,NETWORK.Eth0.mac,VERSION.serialno,BRAND.Model.productid';
-// 		$auth = base64_encode($_POST['userid'].":".$_POST['passwd']);
-	
-// 		$context = stream_context_create([
-// 			"http" => [
-// 				"header" => "Authorization: Basic $auth"
-// 			]
-// 		]);
-// 		$content = file_get_contents($url, true, $context );
-// 		// print $content;
-// 		if (!$content){
-// 			print "no data from url: ".$_POST['IP'].", please check ip address, device online etc.";
-// 			exit;
-// 		}
-		
-// 		$lines = explode("\n", $content);
-// 		print_r($lines);
-// 		for ($i=0; $i<sizeof($lines); $i++){
-// 			if (!trim($lines[$i])) {
-// 				continue;
-// 			}
-// 			list($key, $val) = explode("=",$lines[$i]);
-// 			if (strtolower($key) == 'brand.brand') {
-// 				$brand = trim($val);
-// 			}
-// 			else if (strtolower($key) == 'brand.product.shortname') {
-// 				$model = trim($val);
-// 			}
-// 			else if (strtolower($key) == 'network.eth0.mac') {
-// 				$mac = str_replace(":","",trim($val));
-// 			}
-// 			else if (strtolower($key) == 'brand.model.productid') {
-// 				$product_id = str_replace(":","",trim($val));
-// 			}
-// 			else if (strtolower($key) == 'version.serialno') {
-// 				$usn = str_replace(":","",trim($val));
-// 			}
-	
-	
-// 		}
-// 		$device_info = "mac=".$mac."&brand=".$brand."&model=".$model;
-// 		$sq = "select * from ".$DB_COMMON['param']." where device_info='".$device_info."' ";
-// 		$rs = mysqli_query($connect0, $sq);
-// 		if ($rs->num_rows) {
-// 			$json_str =  "Device:".$device_info." exists already!!\n\r";
-// 		}
-// 		else {
-// 			$regdate = date("Y-m-d H:i:s");
-// 			$sq = "insert into ".$DB_COMMON['param']."(device_info, usn, product_id, url, db_name, method, initial_access, last_access) values('".$device_info."', '".$usn."', '".$product_id."', '".$_POST['IP']."', 'none', 'manual', '".$regdate."', '".$regdate."')";
-// 			// print $sq;
-// 			$rs = mysqli_query($connect0, $sq);
-// 			if($rs) {
-// 				$json_str =  "Add device :".$device_info." OK!\n\r";
-// 			}
-// 		}
-	
-// 	}
-// 	else if ($_POST['mode'] == 'modify_camera' && $_POST['fpk']) {
-// 		$json_str = "modify camera";
-// 		$sq = "update ".$DB_COMMON['param']." set url='".$_POST['IP']."', user_id='".$_POST['userid']."', user_pw='".$_POST['passwd']."' where pk=".$_POST['fpk'];
-// 		// print $sq;
-// 		$rs = mysqli_query($connect0, $sq);
-// 		$json_str = $rs ? "... update OK": "...update Fail";
-// 	}
-// }
-
-// else if($_GET['fr'] == 'add_camera') {
-// 	// $url = 'http://z7.ziyanyun.com/uapi-cgi/param.fcgi';
-// 	// NETWORK.Eth0.mac, BRAND.brand, BRAND.Product.shortname
-// 	$url = 'http://'.$_POST['IP'].'/uapi-cgi/param.fcgi?action=list&group=Brand.brand,Brand.product.shortname,NETWORK.Eth0.mac,VERSION.serialno,BRAND.Model.productid';
-// 	$auth = base64_encode($_POST['userid'].":".$_POST['passwd']);
-
-// 	$context = stream_context_create([
-//     	"http" => [
-//         	"header" => "Authorization: Basic $auth"
-//     	]
-// 	]);
-// 	$content = file_get_contents($url, true, $context );
-// 	// print $content;
-// 	if (!$content){
-// 		print "no data from url: ".$_POST['IP'].", please check ip address, device online etc.";
-// 		exit;
-// 	}
-	
-// 	$lines = explode("\n", $content);
-// 	print_r($lines);
-// 	for ($i=0; $i<sizeof($lines); $i++){
-// 		if (!trim($lines[$i])) {
-// 			continue;
-// 		}
-// 		list($key, $val) = explode("=",$lines[$i]);
-// 		if (strtolower($key) == 'brand.brand') {
-// 			$brand = trim($val);
-// 		}
-// 		else if (strtolower($key) == 'brand.product.shortname') {
-// 			$model = trim($val);
-// 		}
-// 		else if (strtolower($key) == 'network.eth0.mac') {
-// 			$mac = str_replace(":","",trim($val));
-// 		}
-// 		else if (strtolower($key) == 'brand.model.productid') {
-// 			$product_id = str_replace(":","",trim($val));
-// 		}
-// 		else if (strtolower($key) == 'version.serialno') {
-// 			$usn = str_replace(":","",trim($val));
-// 		}
-
-
-// 	}
-// 	$device_info = "mac=".$mac."&brand=".$brand."&model=".$model;
-// 	$sq = "select * from ".$DB_COMMON['param']." where device_info='".$device_info."' ";
-// 	$rs = mysqli_query($connect0, $sq);
-// 	if ($rs->num_rows) {
-// 		$json_str =  "Device:".$device_info." exists already!!\n\r";
-// 	}
-// 	else {
-// 		$regdate = date("Y-m-d H:i:s");
-// 		$sq = "insert into ".$DB_COMMON['param']."(device_info, usn, product_id, url, db_name, method, initial_access, last_access) values('".$device_info."', '".$usn."', '".$product_id."', '".$_POST['IP']."', 'none', 'manual', '".$regdate."', '".$regdate."')";
-// 		// print $sq;
-// 		$rs = mysqli_query($connect0, $sq);
-// 		if($rs) {
-// 			$json_str =  "Add device :".$device_info." OK!\n\r";
-// 		}
-// 	}
-	
-// }
 
 
 
@@ -3147,7 +3005,7 @@ else if($_GET['fr'] == 'webpageConfig') {
 			$x = updateLang('dashboard.php', 'footfall_title', $_POST['postdata']['main_title']);
 			array_push($arr_rs, $x);
 		}
-		else if($_GET['name'] == 'third_block'){
+		else if($_GET['name'] == 'third_block') {
 			$selection = $_POST['postdata']['selection'];
 			$x = updateWebConfig('dashboard','third_block', 0, ["title" =>$selection], 'y') ;
 			array_push($arr_rs, $x);
@@ -3157,8 +3015,7 @@ else if($_GET['fr'] == 'webpageConfig') {
 			if ($selection == 'curve_by_label'){
 				for ($i=0; $i<6; $i++){
 					$display = $_POST['postdata']['data'][$i]['display'];
-					unset($_POST['postdata']['data'][$i]['display']);
-
+					// print_r($_POST['postdata']['data'][$i]);
 					$x = updateWebConfig('dashboard','curve_by_label', $i, $_POST['postdata']['data'][$i], 'y') ;
 					array_push($arr_rs, $x);
 					$x = updateLang('dashboard.php', 'curve_by_label'.$i.'_display', $display);

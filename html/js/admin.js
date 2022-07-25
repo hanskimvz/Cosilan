@@ -1056,7 +1056,7 @@ if (Get['fr'] == 'webpageConfig' ){
 			}
 			else if (t.value == 'third_block'){
 				selection = document.getElementById('third_block').value
-				console.log(selection);
+				// console.log(selection);
 				if (selection == 'curve_by_label'){
 					for (i=0; i<6; i++){
 						arr.push({
@@ -1073,12 +1073,12 @@ if (Get['fr'] == 'webpageConfig' ){
 				}
 
 			}
-			console.log(arr);
+			// console.log(postdata);
 			url = "/inc/query.php?fr=webpageConfig&db=dashboard&mode=update&name=" + t.name;
 			console.log(url);
 			var posting = $.post(url, {postdata:postdata});
 			posting.done(function(data) {
-				console.log(data);
+				// console.log(data);
 				document.getElementById(t.name + '_result').innerHTML = data;
 			});	
 		}

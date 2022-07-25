@@ -56,7 +56,13 @@ else if ($_POST['mode'] == 'list') {
     $ts_to = strtotime($_POST['date_to']);
 
     // $device_info = "mac=".$_GET['mac']."&brand=".$_GET['brand']."&model=".$_GET['model'];
-
+    $sq = "select counter_label from ".$DB_CUSTOM['counter_label']." where camera_code is not null or camera_code !=''";
+    $rs = mysqli_query($connect0, $sq);
+    while($assoc = mysqli_fetch_assoc($rs)){
+        if (!in_array($assoc['counter_label'],  $arr_counter_labels)) {
+            array_push($arr_counter_labels, $assoc['counter_label']);
+        }
+    }
     $sq = "select * from ".$DB_CUSTOM['count']." where timestamp >= ".$ts_from." and timestamp < ".$ts_to." and device_info='".$_POST['device_info']."' order by timestamp asc";
     $rs = mysqli_query($connect0, $sq);
     while($assoc = mysqli_fetch_assoc($rs)){

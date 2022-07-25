@@ -162,6 +162,19 @@ function Result2Json4Curve($rs, $from, $to,  $viewby, $format='json') {
 	$arr_rs = array();
 	$arr_label = array();
 	while($assoc = mysqli_fetch_assoc($rs)) {
+		if ($viewby=='month' || $viewby=='monthly'){
+			$assoc['hour'] = 0;
+			$assoc['min'] = 0; 
+			$assoc['day'] = 1;
+		}
+		else if ($viewby=='day' || $viewby=='daily'){
+			$assoc['hour'] = 0;
+			$assoc['min'] = 0; 
+		}
+		else if ($viewby=='hour' || $viewby=='hourly'){
+			$assoc['min'] = 0; 
+		}
+
 		$datetime = date($arr_cat['dateformat'], mktime($assoc['hour'], $assoc['min'], 0, $assoc['month'], $assoc['day'], $assoc['year']));
 		$arr_rs[$assoc['counter_label']][$datetime] = $assoc['sum'];
 
@@ -427,8 +440,9 @@ function updateWebConfig($page, $frame, $depth, $arr_body, $flag='n') {
 		$sq = "update ".$DB_CUSTOM['web_config']." set body= '".addslashes($json_str)."',  flag='".$flag."'  where page='".$page."' and frame='".$frame."' and depth=".$depth." ";
 	}
 	else {
-		$sq = "insert into ".$DB_CUSTOM['web_config']." ( page, frame, depth, body, flag) values('".$page."', '".$frame."', ".$depth.", '".addslahses($json_str)."', '".$flag."' )";
+		$sq = "insert into ".$DB_CUSTOM['web_config']."( page, frame, depth, body, flag) values('".$page."', '".$frame."', ".$depth.", '".addslashes($json_str)."', '".$flag."')";
 	}
+	// print $sq;
 	$arr['rs'] = mysqli_query($connect0, $sq);
 	$arr['sql'] = $sq;
 
