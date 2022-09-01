@@ -1,28 +1,26 @@
-change_log = """
-###############################################################################
-functions.pyc
-2020-10-25, chkLic.py-> chkLic_s.py and compile this into chkLic.pyc
-2020-10-25, functions.py-> functions_s_s.py and compile this into functions.pyc
-2020-11-25, if Invalid lic, running 3hours and exit
-2021-01-25, config from file or sqlite, log to file or sqlite 
-2021-01-27, modify architechure and create table info_tbl, and function info_to_db
-2021-02-16, modify CFG in sqlite functions, realtime update when modify setting.
-2021-02-16, only python3, elimate python2 code
-2021-02-24, function parseX... added
-2021-02-25, bug fix: parseParam returns dict when error, return Fase -> return dict_rs
-2021-02-26, pymysql with 'with' statement, pymysql version should be above 1.0
-2021-04-18, browse device with arp, because many sites do not support upnp
-2021-05-04, config file, config db file path -> os.path.dirname(sys.argv[0])
-2021-05-23, check lic.
-2021-08-10, support only param, CFG -> configVars and logging file to file only
-2021-08-15, License, param parametr=> software.status.xxxx
-2022-03-18, local lan, use requests module instead of HTTPConnection because of Digest auth
-2022-04-03, add function :info_from_db
-2022-04-03, add option using optparse module
+# Copyright (c) 2022, Hans kim
 
-###############################################################################
-"""
-# print (change_log)
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are met:
+# 1. Redistributions of source code must retain the above copyright
+# notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+# notice, this list of conditions and the following disclaimer in the
+# documentation and/or other materials provided with the distribution.
+
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND
+# CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
+# INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+# MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+# DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR
+# CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+# SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+# BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+# SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+# WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+# NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import os, time, sys
 # from http.client import HTTPConnection
@@ -635,8 +633,8 @@ def getMysqlPort(fname=''):
 
 ################################################ Main #############################
 
-info_to_db('functions', change_log)
-message(change_log)
+# info_to_db('functions', change_log)
+# message(change_log)
 
 modifyConfig("software.status.start_time", int(time.time()))
 modifyConfig("software.service.root_dir", _ROOT_DIR)

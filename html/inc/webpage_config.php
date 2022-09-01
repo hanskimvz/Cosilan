@@ -568,6 +568,25 @@ else if ($_GET['db'] == 'report') {
 EOBLOCK;
 }
 
+else if ($_GET['db'] == 'realtime_screen2') {
+    $table_body = <<<EOBLOCK
+    <div class="card">
+        <div class="card-header">
+            <select name="template" class="form-control">
+                <option value="1">Template1</option>
+                <option value="2">Template2</option>
+                <option value="3">Template3</option>
+                <option value="4">Template4</option>
+            </select>
+        </div>
+        <div class="card-body">
+            <canvas>
+            </canvas>
+        </div>
+    </div>
+EOBLOCK;
+}
+
 else if ($_GET['db'] == 'realtime_screen') {
     $msg = q_language('realtime.php');
     if (!isset($msg['save_changes'])){
@@ -698,9 +717,26 @@ else if ($_GET['db'] == 'realtime_screen') {
     }
     $table_body_label = '<table class="table table-striped table-sm table-bordered table-hover">'.$table_body.'</table>';
 
+    
     $table_body = '<input type="hidden" id="number_size" value="'.sizeof($arr_result['number']).'">
-        <tr><th>No.</th><th colspan="3">'.$msg['font'].'</th><th>'.$msg['foreground'].'</th><th>'.$msg['background'].'</th><th>'.$msg['width'].'</th><th>'.$msg['height'].'</th><th colspan="2">'.$msg['position'].'</th><th>'.$msg['counterlabel'].'</th><th>'.$msg['rule'].'</th><th>'.$msg['enable'].'</th></tr>';
+        <tr><th rowspan="2">No.</th><th colspan="3">'.$msg['font'].'</th><th>'.$msg['foreground'].'</th><th>'.$msg['background'].'</th><th>'.$msg['width'].'</th><th>'.$msg['height'].'</th><th colspan="2">'.$msg['position'].'</th><th>'.$msg['enable'].'</th></tr>
+        <tr><th colspan="2">'.$msg['rule'].'</th><th colspan="8">'.$msg['counterlabel'].'</th></tr>';
+    $arr_rules = array(
+        'today' => 'Today', 
+        'yesterday' => 'Yesterday',
+        'entrance-exit'=> 'Occupancy (Entrance - Exit)', 
+        'today/yesterday' => 'Daily increase rate',
+        'thisyear' => 'This year',
+        'total' =>'Total'
+    );
     for ($i=0; $i<sizeof($arr_result['number']); $i++){
+        $rules = '<input type="text" id="number['.$i.'][rule]" value="'.$arr_result['number'][$i]['rule'].'" class="form-control">';
+        $rules = '';
+        foreach($arr_rules as $label =>$display) {
+            $rules .= '<option value="'.$label.'" '.($arr_result['number'][$i]['rule']==$label ? "selected": "").' >'.$display.'</option>';
+
+        }
+        $rules = '<select id="number['.$i.'][rule]" class="form-control form-cotrol-sm">'.$rules.'</select>';
         $table_body .='<tr>
             <td rowspan="2">'.$i.'</td>
             <td><select id="number['.$i.'][fontfamily]" class="form-control">
@@ -724,8 +760,9 @@ else if ($_GET['db'] == 'realtime_screen') {
             <td><input type="text" id="number['.$i.'][posy]" value="'.$arr_result['number'][$i]['position'][1].'" class="form-control" size="3"></td>
             <td><input type="checkbox" id="number['.$i.'][enable]" '.($arr_result['number'][$i]['enable'] == 'y' ? "checked":"").'></td>
             </tr><tr>
+            <td colspan="2">'.$rules.'</td>
             <td colspan="7">'.(checkListCounterLabels("number[".$i."][ct_labels]", $arr_label,$arr_result['number'][$i]['ct_labels'])).'</td>
-            <td colspan="2"><input type="text" id="number['.$i.'][rule]" value="'.$arr_result['number'][$i]['rule'].'" class="form-control"></td>
+            
             
         </tr>';
     }

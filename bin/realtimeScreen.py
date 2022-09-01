@@ -3,6 +3,7 @@ change_log = """
 rtCount.py
 2021-04-16, version 0.9, first
 
+Not valid, goto rtScreen.py
 ###############################################################################
 """
 import time, os, sys
@@ -198,6 +199,8 @@ def getRptCounting(cursor, ct_labels):
 
     return arr
 
+
+
 def getNumberData(cursor):
     arr_number = list()
     ct_labels = set()
@@ -216,9 +219,9 @@ def getNumberData(cursor):
             "text": 0
         })
     rpt_counting = getRptCounting(cursor, ct_labels)
-    # print (rpt_counting)
+    print (rpt_counting)
     rt_counting = getRtCounting(cursor, rpt_counting)
-    # print (rt_counting)
+    print (rt_counting)
     
     for i, arr in enumerate(arr_number):
         for day in rt_counting:
@@ -588,7 +591,7 @@ if __name__ == '__main__':
     for sect in arrs:
         menus[sect['name']] = Label(root)
         var[sect['name']] = StringVar()
-        menus[sect['name']].configure(textvariable =var[sect['name']])
+        menus[sect['name']].configure(textvariable = var[sect['name']])
 
     th = getDataThread()
     th.start()

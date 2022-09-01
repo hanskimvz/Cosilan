@@ -1,22 +1,27 @@
-change_log = """
-###############################################################################
-counting_main.py
-2020-12-25, version 0.9, build 104 : query_countingreport, return if No Data
-2020-12-26, service for device to common database, 
-2021-01-27, added import 'info_to_db'
-2021-02-17, only for python3, erase python2 code
-2021-02-17, connecting pymysql -> with, executemany 
-2021-04-09, In some PC  environment, (?,?~) cannot be used -> (%,%~)
-2021-04-09, Function write_param(conn, device_info)
-2021-05-04, program halt when network unstable, add try method
-2021-08-10, V0.93. support only sqlite param file, so CFG=>configVars
-2021-12-12, params-> manual, auto
-2022-03-24, seperate from counting_main.py
-2022-03-24, only for active counting, snapshot, heatmap etc. direct access to device and get data.
-2022-03-24, since 0.9.5 and date from 
+# Copyright (c) 2022, Hans kim
 
-###############################################################################
-"""
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are met:
+# 1. Redistributions of source code must retain the above copyright
+# notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+# notice, this list of conditions and the following disclaimer in the
+# documentation and/or other materials provided with the distribution.
+
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND
+# CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
+# INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+# MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+# DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR
+# CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+# SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+# BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+# SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+# WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+# NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 import os, time, sys
 import base64
 import threading
@@ -26,9 +31,7 @@ from parse_functions import parseParam, parseCountReport, parseHeatmapData
 from db_functions import(MYSQL, getWriteParam, putWriteParam, updateSimpleParam, updateParam, updateSnapshot, getLatestTimestamp, updateCountingReport, updateHeatmap, getDeviceListFromDB, getDeviceInfoFromDB)
 from cgis import arr_cgi_str, set_datetime_str
 
-info_to_db('active_counting', change_log)
-message (change_log)
-
+ 
 def putParam(device_ip=None, port=80, authkey=None, cgis=[]):
     data = []
     for cgi in cgis:
@@ -103,16 +106,20 @@ def writeParam(device_info='', device_ip=None, port=80, authkey=None,  device_fa
 
 def setDatetimeToDevice(device_ip=None, port=80, authkey=None,  device_family='IPN'):
     if not device_family:
-            return False      
-
+        return False      
+    if not set_datetime_str["read"][device_family]:
+        return False
     cgi_str = set_datetime_str["read"][device_family]
     data = active_cgi(device_ip, authkey, cgi_str, port)
     arr = dict()
     for line in data.splitlines():
-        key, val = line.split(b"=")
-        arr[key.decode().lower().strip()] = val.decode().lower().strip()
+        sp_line = line.split(b"=")
+        if len(sp_line) <2:
+            print (line)
+            continue
+        arr[sp_line[0].decode().lower().strip()] = sp_line[1].decode().lower().strip()
 
-    if arr['system.datetime.tz.name'] != 'hong_kong':
+    if arr.get('system.datetime.tz.name') != 'hong_kong':
         print ("setting timezone")
         for cgi_str in set_datetime_str["set_tz"][device_family]:
             x = active_cgi(device_ip, authkey, cgi_str, port)

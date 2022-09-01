@@ -1,18 +1,36 @@
-change_log = """
-2021-05-06, initial programming.
+# Copyright (c) 2022, Hans kim
 
-"""
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are met:
+# 1. Redistributions of source code must retain the above copyright
+# notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+# notice, this list of conditions and the following disclaimer in the
+# documentation and/or other materials provided with the distribution.
+
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND
+# CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
+# INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+# MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+# DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR
+# CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+# SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+# BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+# SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+# WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+# NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 # wget http://49.235.119.5/download.php?file=../bin/update.py -O /var/www/bin/update.py
+
 import time, sys, os
 import socket
 from http.client import HTTPConnection
-# import requests
 import uuid
 
-
-absdir = os.path.dirname(os.path.abspath(sys.argv[0]))
-os.chdir(absdir)
-rootdir = os.path.dirname(absdir)
+_ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(sys.argv[0])))
+os.chdir(_ROOT_DIR + "\\bin")
 # print(os.getcwd())
 
 args = ""
@@ -21,14 +39,11 @@ for i, v in enumerate(sys.argv):
         continue
     args += v + " "
 
-
 _SERVER_IP = '49.235.119.5'
 _SERVER_PORT = 80
 _SERVER_MAC = "525400C9FE37"
 
-
 def is_online(ip, port=80):
-	#  if port is not 80 ??
 	s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 	server = (ip, port)
 	s.settimeout(1)
@@ -96,26 +111,25 @@ def update():
     server = (_SERVER_IP, _SERVER_PORT)
     conn = HTTPConnection(*server)
     print ("Downloading update main file ....", end="")
-    file = "bin/update_main.py"
-    fname = "%s/%s" %(rootdir, file)
+    fname = "update_main.py"
     
-    conn.putrequest("GET", "/download.php?file=%s" %file) 
+    conn.putrequest("GET", "/download.php?file=bin/%s" %fname) 
     conn.endheaders()
     rs = conn.getresponse()
     if rs:
-        with open(fname, "wb")  as f:
+        with open("%s\\bin\\%s" %(_ROOT_DIR, fname), "wb")  as f:
             f.write(rs.read())
         
-        print ("....download completed")
+        print (".... download completed")
     conn.close()
 
-    os.chdir("%s/bin" %rootdir)
+    os.chdir("%s/bin" %_ROOT_DIR)
     
     if os.name == 'nt':
-        os.system("python3.exe update_main.py " + args)
+        os.system("python3.exe %s %s" %(fname, args))
     
     elif os.name == 'posix':
-        os.system("/usr/bin/python3 ./update_main.py" )
+        os.system("/usr/bin/python3 %s" %fname )
     
 
 if __name__ == '__main__':

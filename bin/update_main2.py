@@ -33,7 +33,6 @@ _SERVER_IP = '49.235.119.5'
 _SERVER_MAC = "525400C9FE37"
 _SERVER_PORT = 80
 
-
 ### update python 3.8.8. if need
 def checkPythonBin():
     # True : need to download, False: no need to download
@@ -98,7 +97,6 @@ if __name__ == '__main__':
         print ("No need to update new python")
 
 ############################################################################################################################################################
-
 import socket
 import requests
 import json, re
@@ -115,12 +113,18 @@ op.add_option("-V", "--version", action="store_true", dest="_VERSION")
 op.add_option("-W", "--windows-gui", action="store_true", dest="_WIN_GUI")
 op.add_option("-S", "--server-address", action = "store", type="string", dest="_SERVER_IP")
 op.add_option("-D", "--db", action = "store", type="string", dest="CUSTOM_DB")
+op.add_option("-K", "--kill", action = "store", type="string", dest="kill_pid")
 opt, args = op.parse_args()
 
 if opt._SERVER_IP:
     _SERVER_IP = opt._SERVER_IP
 _WIN_GUI = True if opt._WIN_GUI and os.name == 'nt' else False
 _CUSTOM_DB = opt.CUSTOM_DB if opt.CUSTOM_DB  else 'cnt_demo'
+
+if opt.kill_pid:
+    os.system("taskkill /pid %d /F" %(int(opt.kill_pid)))
+
+
 
 MYSQL = {'HOST':'localhost', 'USER':'root', 'PASS':'rootpass','PATH':'', 'PORT':0, 'VERSION':'', 'UPTIME':'', 'RUNNING':False}
 
@@ -152,7 +156,6 @@ logging.basicConfig(
 # BASEDIR=/var/www/
 
 def get_fileist():
-    global _ROOT_DIR
     server = (_SERVER_IP, _SERVER_PORT)
     fname = "../bin/filelist.json"
     conn = HTTPConnection(*server)
@@ -330,9 +333,6 @@ def patchBin():
             else :
                 cmd_str = "cp \"%s\" \"%s.bk\"" %(fname, fname)
             os.system(cmd_str)
-        if file.startswith("bin/template"):
-            if os.path.isfile(file):
-                continue
         conn.putrequest("GET", "/download.php?file=%s" %file) 
         conn.endheaders()
         rs = conn.getresponse()
@@ -363,7 +363,22 @@ def delUnnessaries():
         return False    
     print ("Delete Unnessaries...")
 
-    for i, fname in enumerate(arrFiles['delete']):
+    arrDelFiles = list(arrDelFiles)
+    # for (dirpath, dirname, filename) in os.walk(_ROOT_DIR+"\\Mariadb\\data"):
+    #     arrDelFiles.extend(filename)
+    if os.name == 'nt':
+        arr =  os.listdir(_ROOT_DIR+"\\Mariadb\\data")
+        for fname in arr:
+            if (os.path.isdir(_ROOT_DIR + "\\Mariadb\\data\\" + fname)):
+                continue
+            if fname.lower() == "my.ini":
+                continue
+            if fname.lower().startswith("ibdata"):
+                continue
+
+            arrDelFiles.append("Mariadb\\data\\" + fname)
+
+    for i, fname in enumerate(arrDelFiles):
         if os.name == 'nt' and fname.startswith("html/"):
             fname = "%s/Nginx/%s" %(_ROOT_DIR, fname)
         else :
@@ -480,6 +495,9 @@ def patchRtScreen():
     json_str = json.dumps(arr, ensure_ascii=False, indent=4, sort_keys=True)
     with open("%s/bin/rtScreen.json" %(_ROOT_DIR), "w", encoding="utf-8") as f:
         f.write(json_str)
+
+
+
 
 
 ########################################################################################################################################################
@@ -642,6 +660,7 @@ def patchParamDb():
     
     arr_sq.append('commit')
     
+
     # delete unnecessary
     sq = "select * from param_tbl"
     cur.execute(sq)
@@ -747,6 +766,11 @@ def migrateParam():
         dbsqcon.commit()
         prints("Param table migration finished")
         print()
+
+
+
+
+
 
 
 

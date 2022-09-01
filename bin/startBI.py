@@ -1,26 +1,27 @@
-change_log =  """
-###############################################################################
-startBI.py
-Start BI, management Nginx, php, mysqld , counting_main(thActive, TLSS, thEvent), proc_db(3 database tables)
-2020-11-26, Active mode (local lan) added
-2020-11-17, version 0.9, build 099 
-2020-11-18, version 0.9, build 100 
-2020-11-19, version 0.9, build 101 
-2020-11-20, version 0.9, build 102 : counting , thread->normal function(que)
-2020-11-26, version 0.9, build 103 : counting , thread function-> class from module
-2020-12-25, version 0.9, build 104 : startBI, excute_command()
-2020-12-27, version 0.9, build 105 : browse device service (service provider) with upnp server, upnp_server.py
-2021-02-25, version 0.9, upnp server(linux) is embedded in system, eleminate it
-2021-04-04, version 0.9, os.chdir(absdir) => when service program restart, change working directory to abs dir to read config_db_file
-2021-08-11. version 0.93, support python binary in windows mode.
-2021-09-09, version 0.93, thread stop when network is not linked.
-2021-12-25, version 0.94, support both TLSSand  ACTIVE.
-2021-12-26, version 0.94, Auto Update, Auto Backup.
-2022-03-26, version 0.95. sperate program.. tlss_counting.py, active_counting.py, event_counting.py, parse_functions.py, db_functions.py, cgis.py
-2022-03-30, version 0.95, reapeated thread like db program will use threading.Timer instead of while, sleep
+# Copyright (c) 2022, Hans kim
 
-###############################################################################
-"""
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are met:
+# 1. Redistributions of source code must retain the above copyright
+# notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+# notice, this list of conditions and the following disclaimer in the
+# documentation and/or other materials provided with the distribution.
+
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND
+# CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
+# INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+# MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+# DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR
+# CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+# SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+# BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+# SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+# WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+# NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 
 Version = 0.95
 
@@ -43,8 +44,6 @@ from face_det import thFaceDetTimer
 from proc_db import thProcDBCustomTimer
 from sysdaemon import sysControlTimer
 
-info_to_db('startBI', change_log)
-message (change_log)
     
 _FORCE_STOP =  False
 

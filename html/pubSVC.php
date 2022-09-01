@@ -1,4 +1,30 @@
 <?PHP
+/*
+Copyright (c) 2022, Hans kim
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+1. Redistributions of source code must retain the above copyright
+notice, this list of conditions and the following disclaimer.
+2. Redistributions in binary form must reproduce the above copyright
+notice, this list of conditions and the following disclaimer in the
+documentation and/or other materials provided with the distribution.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND
+CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
+INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR
+CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*/
+
 // session_start();
 for ($i=0; $i<3; $i++) {
 	chdir("../");
@@ -479,9 +505,12 @@ else if(isset($_GET['getHeatmap'])) {
 	
 }
 else if(isset($_GET['getSnapshot'])) { // only camera_code
-	$sq = "select A.body as snapshot, B.code as camera_code from ".$DB_COMMON['snapshot']." as A inner join ".$DB_CUSTOM['camera']." as B on A.device_info= B.device_info ";
+	$sq = "select A.body as snapshot, B.code as camera_code, A.device_info, A.regdate from ".$DB_COMMON['snapshot']." as A inner join ".$DB_CUSTOM['camera']." as B on A.device_info= B.device_info ";
 	if ($condition['cam_code']) {
 		$sq .=  "where ".str_replace("camera_code", "B.code", $condition['cam_code'])." ";
+	}
+	else if ($_GET['mac'] && $_GET['brand'] && $_GET['model']){
+		$sq .=  "where A.device_info='mac=".$_GET['mac']."&brand=".$_GET['brand']."&model=".$_GET['model']."' order by A.regdate desc limit 1";
 	}
 	$sq_order = "";
 }

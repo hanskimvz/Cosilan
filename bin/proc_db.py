@@ -1,20 +1,26 @@
-change_log = """
-###############################################################################
-proc_db.py
-Process_DB, Mainly common database to user(cnt_demo) database
-2020-06-12, data read from common database (counting_report_10min, face_det, MacSniff, param) etc \
-    and store to custom database like cnt_demo, custom_database, SH_TEST etc.
-2020-09-08, Python 2.7 to Python 3.8 starting on 2020-09-08 
-2020-11-16, Because of Active mode, and merge start BI, seperate several thread 
-2020-11-19, version 0.9, build 100
-2020-11-24, version 0.9, build 101 2020-11-24, thread class, set daemon
-2021-02-23, only for python3.
-2021-03-22, fix bug, update counting db via db_name, if db_names are many
-2021-08-11, v0.93, support configVars not CFG
-2022-03-28, V0.95, sum up 3 functions (facedb, countdb, heatmapdb) to one procdb.
+# Copyright (c) 2022, Hans kim
 
-###############################################################################
-"""
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are met:
+# 1. Redistributions of source code must retain the above copyright
+# notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+# notice, this list of conditions and the following disclaimer in the
+# documentation and/or other materials provided with the distribution.
+
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND
+# CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
+# INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+# MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+# DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR
+# CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+# SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+# BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+# SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+# WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+# NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import time
 import json
@@ -23,8 +29,8 @@ import threading
 
 from functions_s import (configVars, TZ_OFFSET, log, dbconMaster, PROBE_INTERVAL, info_to_db, message)
 
-info_to_db('proc_db', change_log)
-message (change_log)
+# info_to_db('proc_db', change_log)
+# message (change_log)
 
 MYSQL = { 
     "commonParam": configVars('software.mysql.db') + "." + configVars('software.mysql.db_common.table.param'),
@@ -673,14 +679,14 @@ class thProcDBCustomTimer():
         procCountDB()
         procHeamapDB()
         procFaceDB()
-        if int(ts // (3600*12)) != self.date_flag:
-            procRptCounting(1)
-            log.info("rt_screen updated, yesterday: %d != %d " %(int(ts // (3600*12)), self.date_flag))
-            self.date_flag = int(ts // (3600*12))
-        if int(ts // 300) != self.min_flag:
-            procRptCounting(0)
-            log.info("rt_screen updated, today: %d != %d " %(int(ts // (300)), self.min_flag))
-            self.min_flag = int(ts//300)
+        # if int(ts // (3600*12)) != self.date_flag:
+        #     procRptCounting(1)
+        #     log.info("rt_screen updated, yesterday: %d != %d " %(int(ts // (3600*12)), self.date_flag))
+        #     self.date_flag = int(ts // (3600*12))
+        # if int(ts // 300) != self.min_flag:
+        #     procRptCounting(0)
+        #     log.info("rt_screen updated, today: %d != %d " %(int(ts // (300)), self.min_flag))
+        #     self.min_flag = int(ts//300)
 
         te = int(time.time())
         self.t = PROBE_INTERVAL - (te - ts)

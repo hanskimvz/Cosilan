@@ -1,5 +1,5 @@
 {
-    "full_screen": "yes",
+    "full_screen": "no",
     "language": [
         {
             "Chinese": "数据库服务器",
@@ -78,6 +78,114 @@
             "English": "Check mysql configuration",
             "Korean": "DB 설정 정보를 확인하세요",
             "key": "check_mysql_conf"
+        },
+        {
+            "Chinese": "修改画面",
+            "English": "Edit Mode",
+            "Korean": "편집 모드",
+            "key": "edit_mode"
+        },
+        {
+            "Chinese": "名称",
+            "English": "Name",
+            "Korean": "이름",
+            "key": "name"
+        },
+        {
+            "Chinese": "显示",
+            "English": "Display",
+            "Korean": "표시",
+            "key": "display"
+        },
+        {
+            "Chinese": "字体",
+            "English": "Font",
+            "Korean": "폰트",
+            "key": "fontfamily"
+        },
+        {
+            "Chinese": "字体大小",
+            "English": "Font size",
+            "Korean": "폰트 크기",
+            "key": "fontsize"
+        },
+        {
+            "Chinese": "字体效果",
+            "English": "Font shape",
+            "Korean": "폰트효과",
+            "key": "fontshape"
+        },
+        {
+            "Chinese": "颜色",
+            "English": "Color",
+            "Korean": "색깔",
+            "key": "color"
+        },
+        {
+            "Chinese": "背景颜色",
+            "English": "Bg Color",
+            "Korean": "배경색깔",
+            "key": "bgcolor"
+        },
+        {
+            "Chinese": "宽度",
+            "English": "Width",
+            "Korean": "넓이",
+            "key": "width"
+        },
+        {
+            "Chinese": "高度",
+            "English": "Height",
+            "Korean": "높이",
+            "key": "height"
+        },
+        {
+            "Chinese": "位置",
+            "English": "Position",
+            "Korean": "위치",
+            "key": "position"
+        },
+        {
+            "Chinese": "Padding",
+            "English": "Padding",
+            "Korean": "Padding",
+            "key": "padding"
+        },
+        {
+            "Chinese": "设备",
+            "English": "Device info",
+            "Korean": "장비",
+            "key": "deviceinfo"
+        },
+        {
+            "Chinese": "规则",
+            "English": "Rule",
+            "Korean": "Rule",
+            "key": "rule"
+        },
+        {
+            "Chinese": "使用",
+            "English": "Use",
+            "Korean": "사용",
+            "key": "use"
+        },
+        {
+            "Chinese": "保存",
+            "English": "Apply",
+            "Korean": "적용",
+            "key": "apply"
+        },
+        {
+            "Chinese": "URL",
+            "English": "URL",
+            "Korean": "URL",
+            "key": "url"
+        },
+        {
+            "Chinese": "Template",
+            "English": "Template",
+            "Korean": "Template",
+            "key": "template"
         }
     ],
     "mysql": {
@@ -96,5 +204,6 @@
         "hour": 4,
         "min": 0
     },
-    "refresh_interval": 5
+    "refresh_interval": 5,
+    "template": "template1.json"
 }

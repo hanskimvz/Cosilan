@@ -1,22 +1,26 @@
-change_log = """
-###############################################################################
-counting_main.py
-2020-12-25, version 0.9, build 104 : query_countingreport, return if No Data
-2020-12-26, service for device to common database, 
-2021-01-27, added import 'info_to_db'
-2021-02-17, only for python3, erase python2 code
-2021-02-17, connecting pymysql -> with, executemany 
-2021-04-09, In some PC  environment, (?,?~) cannot be used -> (%,%~)
-2021-04-09, Function write_param(conn, device_info)
-2021-05-04, program halt when network unstable, add try method
-2021-08-10, V0.93. support only sqlite param file, so CFG=>configVars
-2021-12-12, params-> manual, auto
-2022-03-24, seperate from counting_main.py
-2022-03-26, always actived Event Counting, it doesnt matter whether TCP, HTTP. TCP mode starts with DOOFTEN~, it's like parsing problem.
-2022-03-27, Even if Face detection with HTTP POST, it can handle it.
+# Copyright (c) 2022, Hans kim
 
-###############################################################################
-"""
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are met:
+# 1. Redistributions of source code must retain the above copyright
+# notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+# notice, this list of conditions and the following disclaimer in the
+# documentation and/or other materials provided with the distribution.
+
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND
+# CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
+# INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+# MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+# DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR
+# CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+# SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+# BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+# SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+# WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+# NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import time, sys, os
 import threading
@@ -26,17 +30,12 @@ from functions_s import (recv_timeout, configVars, addSlashes, log,  modifyConfi
 from parse_functions import  parseEventData
 from db_functions import updateEventCount, updateFaceThumnmail
 
-info_to_db('proc_event', change_log)
-message (change_log)
-
 def getEventPush(conn):
     data= recv_timeout(conn)
     # print(data)
     conn.close()
     rs = parseEventData(data)
     return rs
-
-
 
 def event_thread(conn):
     arr_event = getEventPush(conn)

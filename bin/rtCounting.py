@@ -1,35 +1,19 @@
-# Copyright (c) 2022, Hans kim
+change_log = """
+###############################################################################
+rtCount.py
+2021-04-16, version 0.9, first
 
-# Redistribution and use in source and binary forms, with or without
-# modification, are permitted provided that the following conditions are met:
-# 1. Redistributions of source code must retain the above copyright
-# notice, this list of conditions and the following disclaimer.
-# 2. Redistributions in binary form must reproduce the above copyright
-# notice, this list of conditions and the following disclaimer in the
-# documentation and/or other materials provided with the distribution.
 
-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND
-# CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
-# INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
-# MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-# DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR
-# CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-# SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
-# BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
-# SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
-# WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
-# NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
+2022-08-30, goto rtScreen.py
+###############################################################################
+"""
 import time, os, sys
 import json
 from tkinter import *
 from tkinter import ttk
-from tkinter import filedialog
 
 
-from rt_main import var, menus, lang, cwd, ARR_SCREEN, ARR_CONFIG, getSCREEN, getCRPT, dbconMaster, parseRule, procScreen, getDataThread, updateVariables
+from rt_main import var, menus, lang, cwd, ARR_SCREEN, ARR_CONFIG, getSCREEN, getCRPT, dbconMaster, loadConfig, getScreenData, putSections, procScreen, getDataThread, updateVariables
 
 oWin = None
 eWin = None
@@ -65,9 +49,6 @@ def exitProgram(event=None):
         #     thv.stop()
         #     thv.Running = 0
         #     r &= thv.exFlag
-        if i>10:
-            sys.stdout.flush()
-
         
         print (i, r, s)
 
@@ -81,7 +62,6 @@ def exitProgram(event=None):
     root.destroy()
     root.quit()
     print ("destroyed root")
-    sys.stdout.flush()
     # raise SystemExit()
     # sys.exit()
     # print ("sys.exit()")
@@ -121,14 +101,13 @@ def closeOption():
     oWin = None
 
 
+
+
 def optionMenu(win):
     global ARR_CONFIG, var
-    
-    print (sys.executable)
 
     def saveConfig():
         global ARR_CONFIG, ARR_SCREEN, var, thd, ths, menus
-        need_restart = False
         message ("")
         chMysql = False
         for key in ARR_CONFIG['mysql']:
@@ -138,15 +117,13 @@ def optionMenu(win):
                 break
         if chMysql:
             try:
-                ret = dbconMaster(
+                dbconMaster(
                     host = str(var['host'].get().strip()),
                     user = str(var['user'].get().strip()), 
                     password = str(var['password'].get().strip()),
                     charset = str(var['charset'].get().strip()),
                     port = int(var['port'].get().strip())
                 )
-                print (ret.ping(reconnect=False))
-                need_restart = True
             except Exception as e:
                 print ("MYSQL Error")
                 print (e)
@@ -162,12 +139,25 @@ def optionMenu(win):
             message (lang.get("refresh_time_error"))
             return False
 
-        # if ARR_CONFIG['template'] != var['template'].get().strip():
-        if ARR_CONFIG['template'] != template.get().strip():
-            # ARR_CONFIG['template'] = var['template'].get().strip()
-            ARR_CONFIG['template'] = template.get().strip()
+        if ARR_CONFIG['template'] != var['template'].get().strip():
+            ARR_CONFIG['template'] = var['template'].get().strip()
             print ("template changed")
-            need_restart = True
+            for m in menus:
+                print (m)
+                menus[m].place_forget()
+
+            getScreenData(True)
+            putSections()
+            print()
+            # if ths:
+            #     ths.stop()
+            #     for i in range(50):
+            #         print (ths.exFlag)
+            #         if ths.exFlag:
+            #             break
+            #         time.sleep(0.2)
+            #     ths = procScreen()
+            #     ths.start()                
 
         fx = "yes" if var['full_screen'].get() else "no"
         if ARR_CONFIG['full_screen'] != fx:
@@ -181,31 +171,25 @@ def optionMenu(win):
                 root.attributes("-fullscreen", False)
                 root.resizable (True, True)
 
-        # if thd and chMysql:
-        #     thd.stop()
-        #     for i in range(50):
-        #         print (thd.exFlag)
-        #         if thd.exFlag:
-        #             break
-        #         time.sleep(0.2)
+        if thd and chMysql:
+            thd.stop()
+            for i in range(50):
+                print (thd.exFlag)
+                if thd.exFlag:
+                    break
+                time.sleep(0.2)
 
-        #     # for sect in ARR_SCREEN:
-        #     #     menus[sect['name']].place_forget()
+            # for sect in ARR_SCREEN:
+            #     menus[sect['name']].place_forget()
 
-        #     thd = getDataThread()
-        #     thd.start()
+            thd = getDataThread()
+            thd.start()
 
         # print (ARR_CONFIG)
         json_str = json.dumps(ARR_CONFIG, ensure_ascii=False, indent=4, sort_keys=True)
         with open("%s\\rtScreen.json" %cwd, "w", encoding="utf-8") as f:
             f.write(json_str)
         message("saved")
-        if need_restart:
-            #restart
-            sys.stdout.flush()
-            os.execv(sys.executable, ["python3.exe"] + sys.argv)
-            # os.execv("python3.exe", sys.argv)
-
 
     btnFrame = Frame(win)
     btnFrame.pack(side="bottom", pady=10)
@@ -234,20 +218,11 @@ def optionMenu(win):
     Entry(dbFrame, textvariable=var['refresh_interval']).grid(row=6, column=1, ipadx=3)
     cfs = Checkbutton(dbFrame, variable=var['full_screen'])
     cfs.grid(row=7, column=0, columnspan=2)
-    # Entry(dbFrame, textvariable=var['template']).grid(row=8, column=1, ipadx=3)
-    listTemplates = []
-    for x in os.listdir(cwd):
-        if x.startswith("template"):
-            listTemplates.append(x)
-    template = ttk.Combobox(dbFrame, width=16, values=listTemplates)
-    template.grid(row=8, column=1, ipadx=3)
+    Entry(dbFrame, textvariable=var['template']).grid(row=8, column=1, ipadx=3)
     Button(dbFrame, text=lang['save_changes'], command=saveConfig, width=16).grid(row=9, column=0, columnspan=2)
 
     var['refresh_interval'].set(ARR_CONFIG['refresh_interval'])
-    for i, x in enumerate(listTemplates):
-        if x == ARR_CONFIG['template']:
-            template.current(i)
-    # var['template'].set(ARR_CONFIG['template'])
+    var['template'].set(ARR_CONFIG['template'])
     if ARR_CONFIG['full_screen'] == 'yes':
         cfs.select()
     Message(win, textvariable = var['message_str'], width= 300,  bd=0, relief=SOLID, foreground='red').pack(side="top")
@@ -296,8 +271,7 @@ def editScreen(win):
     dbFrame.pack(side="top", pady=10)
 
     listLabels = list()
-    listDevice = list()
-    listDevSet =  set()
+    listDevice = set()
     listFontFamily = ['simhei', 'arial', 'fangsong', 'simsun', 'gulim', 'batang', 'ds-digital','bauhaus 93', 'HP Simplified' ]
     listFontShape  = ['normal', 'bold', 'italic']
     listFontColor  = ['white', 'black', 'orange', 'blue', 'red', 'green', 'purple', 'grey', 'yellow', 'pink']
@@ -309,8 +283,8 @@ def editScreen(win):
     arr = getCRPT()
     for dt in arr:
         for x in arr[dt]:
-            listDevSet.add(x)
-    listDevice = list(listDevSet)
+            listDevice.add(x)
+    listDevice = list(listDevice)
 
 
     arr_lvar = ['display', 'font', 'fontsize', 'fontshape', 'color', 'bgcolor', 'width', 'height', 'posX', 'posY', 'padX', 'padY', 'device_info', 'rule','use', 'url']
@@ -322,7 +296,6 @@ def editScreen(win):
         lvar[x] = StringVar()
     
     def updateEntry(e):
-        message("")
         sel = selLabel.get()
         updateVariables(_selLabel = sel)
 
@@ -356,23 +329,16 @@ def editScreen(win):
                 lvar['padX'].set(x.get('padding')[0])
                 lvar['padY'].set(x.get('padding')[1])
 
+
                 if x.get('flag') == 'y':
                     ent['use'].select()
                 else :
                     ent['use'].deselect()
 
-                if sel.startswith('picture') :
+                if sel.startswith('picture') or sel.startswith('video'):
                     elb['url'].grid(row=1, column=0, sticky="w", pady=2, padx=4)
                     ent['url'].grid(row=1, column=1, columnspan=2, sticky="w")
                     lvar['url'].set(x.get('url'))
-
-                elif sel.startswith('snapshot') or sel.startswith('video'):
-                    elb['device_info'].grid(row=1, column=0, sticky="w", pady=2, padx=4)
-                    ent['device_info'].grid(row=1, column=1, columnspan=2, sticky="w")
-                    lvar['device_info'].set(x.get('device_info'))
-                    for i, ft in enumerate(listDevice):
-                        if x.get('device_info') == ft:
-                            ent['device_info'].current(i)
 
                 else :
                     btn_f_p.grid(row=1, column=1)
@@ -424,23 +390,8 @@ def editScreen(win):
         global ARR_CONFIG
         arr = ARR_SCREEN
         sel = selLabel.get()
-        if not sel:
-            return False
         for i, r in enumerate(arr):
             if r['name'] == sel:
-                if not (lvar['padX'].get().isnumeric() and lvar['padY'].get().isnumeric()):
-                    print ("padding type error")
-                    message("padding type error")
-                    return False
-                if not (lvar['posX'].get().isnumeric() and lvar['posY'].get().isnumeric()):
-                    print ("position type error")
-                    message("position type error")
-                    return False
-                if not (lvar['width'].get().isnumeric() and lvar['height'].get().isnumeric()):
-                    print ("size type error")
-                    message("size type error")
-                    return False
-
                 arr[i]['padding'] = [int(lvar['padX'].get()), int(lvar['padY'].get())]
                 arr[i]['position'] = [int(lvar['posX'].get()), int(lvar['posY'].get())]
                 arr[i]['size'] = [int(lvar['width'].get()), int(lvar['height'].get())]
@@ -449,24 +400,14 @@ def editScreen(win):
                 if sel.startswith('picture') or sel.startswith('video'):
                     arr[i]['url'] = lvar['url'].get()
 
-                elif sel.startswith('snapshot'):
-                    if ent['device_info'].get() == 'all':
-                        continue
-                    arr[i]['device_info'] = ent['device_info'].get()
-
                 else:
-                    if not (lvar['fontsize'].get().isnumeric()):
-                        print ("fontsize type error")
-                        message("fontsize type error")
-                        return False
                     arr[i]['font'] = [ent['font'].get(), int(lvar['fontsize'].get()), ent['fontshape'].get()]
                     arr[i]['color'] = [ent['color'].get(), ent['bgcolor'].get()]
+                    arr[i]['size'] = [int(lvar['width'].get()), int(lvar['height'].get())]
+                    arr[i]['padding'] = [int(lvar['padX'].get()), int(lvar['padY'].get())]
+                    arr[i]['position'] = [int(lvar['posX'].get()), int(lvar['posY'].get())]
 
                     if sel.startswith('number'):
-                        if not parseRule(lvar['rule'].get()):
-                            print (parseRule(lvar['rule'].get()))
-                            message("rule error \n sum/diff/div/percent(date:counter_label,), \nEx: sum(today:entrance, today:exit)")
-                            return False
                         arr[i]['text'] = ""
                         arr[i]['device_info'] = ent['device_info'].get()
                         arr[i]['rule'] = lvar['rule'].get()
@@ -475,7 +416,7 @@ def editScreen(win):
                     
 
         # print (arr)
-        message("saved")
+        print (".")
         json_str = json.dumps(arr, ensure_ascii=False, indent=4, sort_keys=True)
         with open("%s\\%s" %(cwd, ARR_CONFIG['template']), "w", encoding="utf-8") as f:
             f.write(json_str)
@@ -499,16 +440,8 @@ def editScreen(win):
         lvar['fontsize'].set(str(int(lvar['fontsize'].get())-1))
         saveScreen()
 
-    def browseFile():
-        global eWin
-        fdir = os.path.dirname(lvar['url'].get())
-        fname = filedialog.askopenfilename(initialdir=fdir , title="Select imagefile", filetypes=[("image", ".jpeg"),("image", ".png"),("image", ".jpg"),])
-        print(fname)
-        lvar['url'].set(fname)
-        eWin.lift()
-
     Label(dbFrame, text=lang['name']).grid(row=0, column=0, sticky="w", pady=2, padx=4)
-    selLabel = ttk.Combobox(dbFrame, width=20, state="readonly", values=listLabels)
+    selLabel = ttk.Combobox(dbFrame, width=20, values=listLabels)
     selLabel.bind("<<ComboboxSelected>>", updateEntry)
     selLabel.grid(row=0, column=1, columnspan=2, sticky="w")
 
@@ -517,16 +450,16 @@ def editScreen(win):
     ent['display'] = Entry(dbFrame, textvariable=lvar['display'], width=22)
     # Font
     elb['font'] = Label(dbFrame, text=lang['fontfamily'])
-    ent['font'] =  ttk.Combobox(dbFrame, width=20, state="readonly", values=listFontFamily)
+    ent['font'] =  ttk.Combobox(dbFrame, width=20, values=listFontFamily)
     #Font shape
     elb['fontshape'] = Label(dbFrame, text=lang['fontshape'])
-    ent['fontshape'] = ttk.Combobox(dbFrame, width=20, state="readonly", values=listFontShape)
+    ent['fontshape'] = ttk.Combobox(dbFrame, width=20, values=listFontShape)
     # Color
     elb['color'] = Label(dbFrame, text=lang['color'])
-    ent['color'] = ttk.Combobox(dbFrame, width=20, state="readonly", values=listFontColor)
+    ent['color'] = ttk.Combobox(dbFrame, width=20, values=listFontColor)
     # Bg color
     elb['bgcolor'] = Label(dbFrame, text=lang['bgcolor'])
-    ent['bgcolor'] = ttk.Combobox(dbFrame, width=20, state="readonly", values=listFontColor)
+    ent['bgcolor'] = ttk.Combobox(dbFrame, width=20, values=listFontColor)
     # Width
     elb['width'] = Label(dbFrame, text=(lang['width'] + "/" + lang['height']))
     ent['width'] = Entry(dbFrame, textvariable=lvar['width'], width=10)
@@ -537,7 +470,7 @@ def editScreen(win):
     ent['padY'] = Entry(dbFrame, textvariable=lvar['padY'], width=10)
     # Device Info
     elb['device_info'] = Label(dbFrame, text=lang['deviceinfo'])
-    ent['device_info'] = ttk.Combobox(dbFrame, width=20, state="readonly", values=listDevice)
+    ent['device_info'] = ttk.Combobox(dbFrame, width=20, values=listDevice)
     # Rule
     elb['rule'] = Label(dbFrame, text=lang['rule'])
     ent['rule'] = Entry(dbFrame, textvariable=lvar['rule'], width=22)
@@ -545,11 +478,8 @@ def editScreen(win):
     elb['use'] = Label(dbFrame, text=lang['use'])
     ent['use'] = Checkbutton(dbFrame, variable=lvar['use'])
     # Pic, Video url
-    # elb['url'] = Label(dbFrame, text=lang['url'])
-    elb['url'] = Button(dbFrame, command=browseFile, text=lang['url'])
-    ent['url'] = Entry(dbFrame, textvariable=lvar['url'], width=22)
-    # btnFileBr = Button(dbFrame, command=browseFile, text="select")
-
+    elb['url'] = Label(dbFrame, text=lang['url'])
+    ent['url'] =  Entry(dbFrame, textvariable=lvar['url'], width=22)
 
     Button(dbFrame, text=lang['save_changes'], command=saveScreen, width=16).grid(row=11, column=0, columnspan=3)
 
@@ -574,8 +504,6 @@ def editScreen(win):
     # ent['posY'].grid(row=4, column=1, columnspan=2)
     ent['fontsize'] = Entry(btFrame, textvariable=lvar['fontsize'], width=4)
     # ent['fontsize'].grid(row=4, column=3)
-    var['message_str'] = StringVar()
-    Message(win, textvariable = var['message_str'], width= 200,  bd=0, relief=SOLID, foreground='red').pack(side="top")
 
 
 

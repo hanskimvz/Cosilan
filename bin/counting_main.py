@@ -12,6 +12,7 @@ counting_main.py
 2021-08-10, V0.93. support only sqlite param file, so CFG=>configVars
 2021-12-12, params-> manual, auto
 
+Not valid anymore since 0.94
 ###############################################################################
 """
 print (change_log)
