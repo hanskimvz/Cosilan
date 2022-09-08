@@ -108,6 +108,9 @@ while($assoc = mysqli_fetch_assoc($rs)){
 	if ( $assoc['flag'] == 'n'){
 		continue;
 	}
+	if ($page == "admin.php" && $assoc['frame'] == 'realtime_screen') {
+		continue;
+	}
 	$arr = json_decode($assoc['body'], true);
 	if  ($assoc['pos_y'] == 0 && $y) {
 		$menu_str  .= sidebarMenu(-1);	

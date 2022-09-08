@@ -13,15 +13,32 @@
 <?PHP
 session_start();
 include ("dbconnect.php");
+require_once("./parsedown/Parsedown.php");
 // print_r($_GET);
 
 $tableBody = "";
-if (isset($_GET['fr'])) {
-	include "pages.php";
+if ($_GET['fr'] == "view") {
+	// include "pages.php";
+	// include "view_markdown.php";
+	print '	<style>
+    h2{
+        text-align: center;
+        background: #EFEFEF;
+        padding: 8px 6px;
+    }
+    table {border-collapse: collapse; border: 0; box-shadow: 1px 2px 3px #eee;}
+    th {border: 1px solid #aaa; font-size: 100%; vertical-align: baseline; padding: 3px 6px;}
+    td {border: 1px solid #aaa; font-size: 100%; vertical-align: baseline; padding: 3px 6px;}
+	</style>';
+	$sq = "select * from paragraph where code='".$_GET['code']."'";
+    // print $sq;
+    $rs = mysqli_query($connect, $sq);
+    $assoc =  mysqli_fetch_assoc($rs);
+    
+    $Parsedown = new Parsedown();
+    $tableBody = $Parsedown->text($assoc['body']);
+	$tableBody = '<h2>'.$assoc['title'].'</h2>'.$tableBody;
 }
-
-
-
 
 function simpleBodyText($str,$search){
 	$str = strip_tags($str);
@@ -42,7 +59,9 @@ if(isset($_GET['search'])) {
 	$rs = mysqli_query($connect, $sq);
 	while ($assoc = mysqli_fetch_assoc($rs)){
 		// print_r($assoc);
-		$view_href = 'view.php?code='.$assoc['code'].'';
+		// $view_href = '?fr=view&code='.$assoc['code'].'';
+		$view_href = 'view_markdown.php?code='.$assoc['code'].'';
+		// $view_href = 'view.php?code='.$assoc['code'].'';
 		$assoc['title'] = '<a href="'.$view_href.'" target="view_doc">'.$assoc['title'].'</a>';
 		$tableBody .= '<tr>
 			<td><p>'.$assoc['title'].' ---- '.date("Y-m-d", strtotime($assoc['last_modified'])).'</br>
@@ -50,7 +69,7 @@ if(isset($_GET['search'])) {
 			</tr>';
 	}
 	if (!$tableBody){
-		$tableBody = "No Record, Please Try Other Keywords!";
+		$tableBody = "No Record, Phlease Try Other Keywords!";
 	}
 	$tableBody = '<table class="table table-sm table-striped">
 		<tbody>'.$tableBody.'</tbody></table>';
@@ -61,6 +80,44 @@ if (!$tableBody) {
 
 }
 
+$sq = "select pk, code, class, category, title, seq, flag from paragraph order by seq asc";
+$rs = mysqli_query($connect, $sq);
+$arr_rs = array(
+	"Cosilan"=>array(),
+	"VCA" =>array(),
+	// "Howto"=>array(),
+	"Product"=>array(),
+);
+while ($assoc=mysqli_fetch_assoc($rs)){
+	array_push($arr_rs[$assoc['class']], $assoc);
+}
+// print_r($arr_rs);
+$sideMenu = '';
+foreach($arr_rs as $cls=>$arr_cat) {
+	if ($cls == 'None' || $cls==''|| $cls=='Howto') {
+		continue;
+	}
+	$sideMenu .= '<li class="sidebar-item">
+		<a href="#'.$cls.'" data-toggle="collapse" class="sidebar-link collapsed"><span class="align-middle">'.$cls.'</span></a>
+		<ul id="'.$cls.'" class="sidebar-dropdown list-unstyled collapse">';
+		for($i=0; $i<sizeof($arr_cat); $i++){
+			if (!$arr_cat[$i]['flag']) {
+				continue;
+			}
+			$sideMenu .= '<li id="'.$arr_cat[$i]['code'].'" class="sidebar-item"><a class="sidebar-link" href="/help/?fr=view&code='.$arr_cat[$i]['code'].'" ><span class="align-middle">'.$arr_cat[$i]['category'].'</span></a></li>';
+		}
+	$sideMenu .='
+		</ul>
+	</li>';
+
+}
+
+$sideMenu = '<nav class="sidebar sidebar-sticky">
+	<div class="sidebar-content ">
+		<a class="sidebar-brand" href="/help/"><span class="align-middle ml-2">HELP PAGE</span></a> 
+		<ul class="sidebar-nav">'.$sideMenu.'</ul>
+	</div>
+</nav>';
 
 
 
@@ -107,7 +164,7 @@ $header
 </html>
 EOBLOCK;
 
-$sideMenu = <<<EOBLOCK
+$sideMenux = <<<EOBLOCK
 <nav class="sidebar sidebar-sticky">
 	<div class="sidebar-content ">
 		<a class="sidebar-brand" href="/help/"><span class="align-middle ml-2">HELP PAGE</span></a> 
@@ -185,7 +242,7 @@ console.log(Get);
 var a = '';
 var b = '';	
 
-a = document.getElementById(Get['fr']);
+a = document.getElementById(Get['code']);
 
 if (a) {
 	a.classList.add("active");

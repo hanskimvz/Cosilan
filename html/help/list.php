@@ -1,57 +1,78 @@
-<!DOCTYPE html>
+
 <?PHP
 session_start();
 // print_r($_SESSION);
 include ("dbconnect.php");
 // print_r($_GET);
 
+if (isset($_GET['modify'])){
+    print $_POST['flag'];
+    $flag = $_POST['flag'] == 'true' ? 1 : 0;
+    
+
+    $sq = "update paragraph set class='".$_POST['cls']."', category='".addslashes(trim($_POST['cat']))."', seq=".$_POST['seq'].", flag=".$flag." where pk=".$_POST['pk'];
+    print $sq;
+    $rs = mysqli_query($connect, $sq);
+    if($rs) {
+        print "OK";
+    }
+    else {
+        print "FAIL";
+    }
+
+    exit();
+}
 
 
-// require_once("./parsedown/Parsedown.php");
-// $Parsedown = new Parsedown();
-
-// $fp = fopen("parsedown/README.md", "r");
-// $body = fread($fp, filesize("parsedown/README.md"));
-// fclose($fp);
-
-// print $Parsedown->text($body);
-
-// echo $Parsedown->text('Hello _Parsedown_!'); # prints: <p>Hello <em>Parsedown</em>!</p>
-// echo $Parsedown->line('Hello _Parsedown_!'); # prints: Hello <em>Parsedown</em>!
-
-$sq = "select pk, code, title, regdate, last_modified, flag from paragraph";
+$sq = "select pk, code, class, category, title, regdate, last_modified, seq, flag from paragraph order by class asc, seq asc";
 $rs = mysqli_query($connect, $sq);
 while ($assoc = mysqli_fetch_assoc($rs)){
     // print_r($assoc);
+    $pk = $assoc['pk'];
     $view_href = 'view_markdown.php?code='.$assoc['code'].'';
-    $assoc['title'] = '<a href="'.$view_href.'" target="view_page">'.$assoc['title'].'</a>';
     if ($_SESSION['logID'] == 'hanskim') {
-        $assoc['code'] = '<a href="modify.php?pk='.$assoc['pk'].'" target="modify_page">'.$assoc['code'].'</a>';
+        $assoc['code'] = '<a href="edit_markdown.php?pk='.$pk.'" target="modify_page">'.$assoc['code'].'</a>';
     }
-    $assoc['pk'] = '<a href="'.$view_href.'">'.$assoc['pk'].'</a>';
+    $assoc['pk'] = '<a href="'.$view_href.'">'.$pk.'</a>';
+
     $HTML_BODY .= '<tr>
         <td>'.$assoc['pk'].'</td>
         <td>'.$assoc['code'].'</td>
+        <td><select id="class['.$pk.']" class="form-control form-control-sm">
+            <option value="None"></option>
+            <option value="VCA" '.($assoc['class']=='VCA'? "selected":"").'>VCA</option>
+            <option value="Cosilan" '.($assoc['class']=='Cosilan'? "selected":"").'>Cosilan</option>
+            <option value="Howto" '.($assoc['class']=='Howto'?"selected":"").'>Howto</option>
+            <option value="Product" '.($assoc['class']=='Product'?"selected":"").'>Product</option>
+        </select></td>
+        <td><input type="text" id="category['.$pk.']" value="'.$assoc['category'].'" class="form-control form-control-sm" size="1" ></td>
         <td>'.$assoc['title'].'</td>
         <td>'.$assoc['regdate'].'</td>
         <td>'.$assoc['last_modified'].'</td>
-        <td>'.$assoc['flag'].'</td>
-        </tr>';
+        <td><input type="text" id="seq['.$pk.']" value="'.$assoc['seq'].'" class="form-control form-control-sm" size="1" ></td>
+        <td><input type="checkbox" id="chk_flag['.$pk.']" '.($assoc['flag']?"checked":"").'></td>';
+        if ($_SESSION['logID'] == 'hanskim') {
+            $HTML_BODY .= '<td><button class="btn btn-sm btn-primary" onClick="submit_this('.$pk.')" >submit</button></td>';
+        }
+        $HTML_BODY .= '</tr>';
 }
 
-$HTML_BODY = '<table class="table table-sm table-striped">
+$HTML_BODY = '<table class="table table-sm table-striped table-hover">
     <thead>
     <tr>
     <th>Pk</th>
     <th>Code</th>
+    <th>Class</th>
+    <th>Category</th>
     <th>Title</th>
     <th>Regdate</th>
     <th>Last Modified</th>
+    <th>Seq No.</th>
     <th>Flag</th>
     </tr></thead>
     <tbody>'.$HTML_BODY.'</tbody></table>';
 ?>
-
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8">
@@ -72,3 +93,29 @@ $HTML_BODY = '<table class="table table-sm table-striped">
     <script src="/js/app.js"></script>
 </html>
 
+<script>
+function submit_this(t){
+    console.log(t);
+    cls = document.getElementById('class['+t+']').value;
+    cat = document.getElementById('category['+t+']').value;
+    seq = document.getElementById('seq['+t+']').value;
+    flag = document.getElementById('chk_flag['+t+']').checked;
+    if (!seq){
+        seq =0;
+    }
+    console.log(cls,cat,  seq, flag)
+    let url ="?modify";
+    var posting = $.post(url, {
+        pk:t,
+        cls:cls,
+        cat:cat,
+        seq:seq,
+        flag:flag
+
+    });
+    posting.done(function(data) {
+        console.log(data);
+    });	
+}
+
+</script>

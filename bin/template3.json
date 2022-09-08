@@ -453,8 +453,8 @@
         "text": ""
     },
     {
-        "device_info": "mac=001323A00CE1&brand=SIDWAY Co. LTD.&model=SD-CN6102HD",
-        "flag": "y",
+        "device_info": "mac=001323A0073A&brand=CAP&model=NS202HD",
+        "flag": "n",
         "name": "snapshot_D",
         "padding": [
             0,
@@ -777,7 +777,7 @@
             0
         ],
         "position": [
-            106,
+            112,
             720
         ],
         "rule": "today:entrance",

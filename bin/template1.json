@@ -16,7 +16,7 @@
             0
         ],
         "position": [
-            600,
+            607,
             40
         ],
         "size": [
@@ -28,7 +28,7 @@
     {
         "color": [
             "white",
-            "black"
+            "grey"
         ],
         "flag": "y",
         "font": [
@@ -42,8 +42,8 @@
             20
         ],
         "position": [
-            106,
-            204
+            100,
+            179
         ],
         "size": [
             10,
@@ -152,8 +152,8 @@
         ],
         "rule": "sum(today:entrance)",
         "size": [
-            8,
-            1
+            0,
+            0
         ],
         "text": ""
     },

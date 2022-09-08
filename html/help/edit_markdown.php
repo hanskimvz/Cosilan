@@ -17,7 +17,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['save-file'])){
         $_GET['pk'] = mysqli_fetch_row($rs)[0];
     }
 
-    $sq= "update ".$_GET['table']." set code='".$_POST['code']."', title='".addslashes(trim($_POST['title']))."', body='".addslashes($_POST['body'])."', hashtag='".addslashes($_POST['hashtag'])."', last_modified = '".$regdate."', flag=0 where pk=".$_GET['pk'];
+    $sq= "update ".$_GET['table']." set code='".$_POST['code']."', title='".addslashes(trim($_POST['title']))."', body='".addslashes($_POST['body'])."', hashtag='".addslashes($_POST['hashtag'])."', last_modified = '".$regdate."' where pk=".$_GET['pk'];
     // print $sq;
     $rs= mysqli_query($connect, $sq);
     if ($rs){

@@ -23,21 +23,14 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import time, os, sys
-import re, json, base64
+import re, json
 import pymysql
-from tkinter import *
-from tkinter import ttk
-from tkinter import filedialog
-import cv2 as cv
-import numpy as np
-from PIL import ImageTk, Image
-import threading
 import locale
 import uuid
 
 
-cwd = os.path.abspath(os.path.dirname(sys.argv[0]))
-os.chdir(cwd)
+_ROOT_DIR = os.path.abspath(os.path.dirname(sys.argv[0]))
+os.chdir(_ROOT_DIR)
 
 TZ_OFFSET = 3600*8
 
@@ -47,29 +40,8 @@ ARR_SCREEN = list()
 
 USE_SNAPSHOT = False
 
-root = None
-menus = dict()
-var = dict()
 lang = dict()
-
-editmode = False
-selLabel = None
 templateFlag = True  # True : need read, False : no need to read
-
-def updateVariables(_root=None, _menus=None, _var=None, _lang=None, _editmode=None, _selLabel=None):
-    global root, menus, var, lang, editmode, selLabel
-    if _root !=None:
-        root = _root
-    if _menus != None:
-        menus = _menus
-    if _var != None:
-        var = _var
-    if _lang != None:
-        lang= _lang
-    if _editmode != None:
-        editmode = _editmode
-    if _selLabel != None:
-        selLabel = _selLabel
 
 def getMac():
 	mac = "%012X" %(uuid.getnode())
@@ -93,9 +65,7 @@ def dbconMaster(host='', user='', password='',  charset = 'utf8', port=0): #Mysq
         return None
     return dbcon   
 
-def forgetLabel(label):
-    global menus
-    menus[label].place_forget()
+
 
 def datetime_string():
     global timeshow_label
@@ -158,7 +128,7 @@ def getSnapshot(cursor, device_info):
 def loadConfig():
     global lang, ARR_CONFIG
 
-    with open ('%s\\rtScreen.json' %cwd, 'r', encoding='utf8')  as f:
+    with open ('%s\\rtScreen.json' %_ROOT_DIR, 'r', encoding='utf8')  as f:
         body = f.read()
     ARR_CONFIG = json.loads(body)        
 
@@ -183,74 +153,11 @@ def loadConfig():
 def getScreenData(force = 0):
     global ARR_CONFIG, templateFlag, ARR_SCREEN
     if templateFlag or force:
-        with open ("%s\\%s" %(cwd, ARR_CONFIG['template']), 'r', encoding="utf-8") as f:
+        with open ("%s\\%s" %(_ROOT_DIR, ARR_CONFIG['template']), 'r', encoding="utf-8") as f:
             body = f.read()
             print ('readed template')
         ARR_SCREEN = json.loads(body)
         templateFlag = False
-
-def putSections():
-    global ARR_SCREEN, root, var, menus, editmode
-    # print (root, editmode, selLabel)
-    for rs in ARR_SCREEN:
-        name = rs.get('name')
-        if not (name.startswith('title') or name.startswith('label') or name.startswith('number') or name.startswith('snapshot') or name.startswith('video') or name.startswith('picture')):
-            continue
-
-        if not name in menus:
-            menus[name] = Label(root)
-            var[name] = StringVar()
-            menus[name].configure(textvariable = var[name])
-            print("create label %s" %name)
-
-        if rs.get('flag') == 'n':
-            menus[name].place_forget()
-            continue
-                
-        if rs.get('text'):
-            var[name].set(rs['text'])
-
-        if rs.get('font'):
-            menus[name].configure(font=tuple(rs['font']))
-        if rs.get('color'):
-            menus[name].configure(fg=rs['color'][0], bg=rs['color'][1])
-
-        if rs.get('padding'):
-            menus[name].configure(padx=rs['padding'][0], pady=rs['padding'][1])
-        
-        w, h = int(rs['size'][0]), int(rs['size'][1]) if rs.get('size') else (0, 0)
-        posx, posy = (int(rs['position'][0]), int(rs['position'][1])) if rs.get('position') else (0, 0)
-
-        if name.startswith('number'):
-            menus[name].configure(anchor='e')
-        elif name.startswith('picture') :
-            imgPath = rs.get('url')
-            if not (imgPath and os.path.isfile(imgPath)):
-                imgPath = "cam.jpg"
-            img = cv.imread(imgPath)
-            img = Image.fromarray(img)
-            img = img.resize((w, h), Image.LANCZOS)
-            imgtk = ImageTk.PhotoImage(image=img)
-            # menus[name].create_image(0, 0, anchor="nw", image=imgtk)
-            menus[name].configure(image=imgtk)
-            menus[name].photo=imgtk # phtoimage bug
-            # imgPathOld[name] = imgPath
-
-        elif name.startswith('snapshot'):
-            if rs.get('device_info') :
-                USE_SNAPSHOT = True
-        elif name.startswith('video'):
-            if rs.get('url') :
-                USE_VIDEO = True
-        
-        if editmode and  selLabel == name:
-                menus[name].configure(borderwidth=2, relief="groove")
-        else :
-            menus[name].configure(borderwidth=0)
-
-        menus[name].configure(width=w, height=h)
-        menus[name].place(x=posx, y=posy)
-
 
 def getWorkingHour(cursor):
     arr_sq = list()
@@ -332,9 +239,9 @@ def updateRptCounting(cursor):
                 ARR_CRPT[arr['ref_date']]['all'][row[1]]['latest'] = row[3]
                 ARR_CRPT[arr['ref_date']]['all'][row[1]]['datetime'] = time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime(row[3]))
 
-    for x in ARR_CRPT:
-        for y in ARR_CRPT[x]:
-            print (x, y, ARR_CRPT[x][y])
+    # for x in ARR_CRPT:
+    #     for y in ARR_CRPT[x]:
+    #         print (x, y, ARR_CRPT[x][y])
     
 def getRtCounting(cursor):
     arr_t = dict()
@@ -454,225 +361,12 @@ def getNumberData(cursor):
     
     return arr_number  
 
-def changeNumbers(arr):
-    for rs in arr:
-        if var.get(rs['name']):
-            var[rs['name']].set(rs.get('text'))
-
-
-def changeSnapshot(cursor):
-    global ARR_SCREEN, menus
-    for rs in ARR_SCREEN:
-        name = rs.get('name')
-        w, h = int(rs['size'][0]), int(rs['size'][1]) if rs.get('size') else (0, 0)
-        if name.startswith('snapshot'):
-            imgb64 = getSnapshot(cursor, rs.get('device_info'))
-            if imgb64:
-                imgb64 = imgb64.decode().split("jpg;base64,")[1]
-                body = base64.b64decode(imgb64)
-                imgarr = np.asarray(bytearray(body), dtype=np.uint8)
-                img = cv.imdecode(imgarr, cv.IMREAD_COLOR)
-            else :
-                img = cv.imread("./cam.jpg")
-            img = Image.fromarray(img)
-            img = img.resize((w, h), Image.LANCZOS)
-            imgtk = ImageTk.PhotoImage(image=img)
-            # menus[name].create_image(0, 0, anchor="nw", image=imgtk)
-            menus[name].configure(image=imgtk)
-            menus[name].photo=imgtk # phtoimage bug
-            # imgPathOld[name] = imgPath
-
-class playVideo():
-    def __init__(self, label_n, cap):
-        self.cap = cap
-        self.interval = 10 
-        self.label= label_n
-        self.w = 640
-        self.h = 320
-    def run(self):
-        self.update_image()
-
-    def update_image(self):    
-        # Get the latest frame and convert image format
-        self.OGimage = cv.cvtColor(self.cap.read()[1], cv.COLOR_BGR2RGB) # to RGB
-        self.OGimage = Image.fromarray(self.OGimage) # to PIL format
-        self.image = self.OGimage.resize((self.w, self.h), Image.ANTIALIAS)
-        self.image = ImageTk.PhotoImage(self.image) # to ImageTk format
-        # Update image
-        self.label.configure(image=self.image)
-        # Repeat every 'interval' ms
-        self.label.after(self.interval, self.update_image)
-
-class showPicture(threading.Thread):
-    def __init__(self):
-        threading.Thread.__init__(self)
-        self.delay = ARR_CONFIG['refresh_interval']
-        self.Running = True
-        self.exFlag = False
-        self.i = 0
-
-    def run(self):
-        imgPathOld =  dict()
-        thx = dict()
-        cap=None
-        while self.Running :
-            if self.i == 0:
-                for rs in ARR_SCREEN:
-                    name  = rs.get('name')
-                    if rs.get('flag')=='n':
-                        continue
-                    if not name in menus:
-                        menus[name] = Label(root, borderwidth=0)
-                        # menus[name] = Canvas(root)
-
-                    if name.startswith('picture') :
-                        imgPath = rs.get('url')
-                        w, h = rs.get('size')
-                        if not imgPath :
-                            continue
-                        print (imgPath)
-                        img = cv.imread(imgPath)
-                        # img = cv.resize(img, (int(w), int(h)))
-                        img = Image.fromarray(img)
-                        img = img.resize((int(w), int(h)), Image.LANCZOS)
-                        imgtk = ImageTk.PhotoImage(image=img)
-                        # menus[name].create_image(0, 0, anchor="nw", image=imgtk)
-                        menus[name].configure(image=imgtk)
-                        menus[name].photo=imgtk # phtoimage bug
-                        menus[name].configure(width=int(w), height=int(h))
-                        menus[name].place(x=int(rs['position'][0]), y=int(rs['position'][1]))
-                        imgPathOld[name] = imgPath
-                    
-                    elif name.startswith('video'):
-                       
-                        imgPath = rs.get('url')
-                        w, h = rs.get('size')
-                        if not imgPath:
-                            continue
-                        print (imgPath)
-                        if imgPathOld.get(name) != imgPath:
-                            if cap:
-                                cap.release()
-                            cap = cv.VideoCapture(imgPath)
-                            thx[name] = playVideo(menus[name], cap)
-                            thx[name].run()
-                            print ("cap init")
-                            imgPathOld[name] = imgPath
-                        menus[name].configure(width=int(w), height=int(h))
-                        thx[name].w = int(w)
-                        thx[name].h = int(h)
-                        menus[name].place(x=int(rs['position'][0]), y=int(rs['position'][1]))
-                            
-                            
-                        
-                        if self.Running == False:
-                            cap.release()
-                            cv.destroyAllWindows()
-                            break
-                    
-            self.i += 1
-            if self.i > self.delay:
-                self.i = 0
-            # print (self.i)
-            time.sleep(1)
-        # if cap:
-        #     cap.release()
-        self.exFlag = True       
-
-    def stop(self):
-        self.Running = False
-
-class procScreen(threading.Thread):
-    def __init__(self):
-        threading.Thread.__init__(self)
-        self.delay = ARR_CONFIG['refresh_interval']
-        self.Running = True
-        self.exFlag = False
-        self.i = 0
-
-    def run(self):
-        while self.Running :
-            if self.i == 0 :
-                getScreenData()
-                putSections()
-
-            self.i += 1
-            if self.i > self.delay:
-                self.i = 0
-            # print (self.i)
-            time.sleep(1)
-        self.exFlag = True
-                
-    def stop(self):
-        self.Running = False
-
-class getDataThread(threading.Thread):
-    def __init__(self):
-        threading.Thread.__init__(self)
-        self.delay = ARR_CONFIG['refresh_interval']
-        self.Running = True
-        self.exFlag = False
-        self.last = 0
-        self.i = 0
-
-    def run(self):
-        self.dbcon = dbconMaster()
-        while self.Running :
-            if self.i == 0 :
-                self.cur = self.dbcon.cursor()
-                if int(time.time())-self.last > 300:
-                # if (int(time.time())%300) < 2: #every 5minute
-                    try:
-                        updateRptCounting(self.cur)
-                        self.last = int(time.time())
-                    except Exception as e:
-                        print (e)
-                        time.sleep(5)
-                        self.dbcon = dbconMaster()
-                        print ("Reconnected")
-                        continue
-                
-                changeSnapshot(self.cur)
-                try :
-                    arrn = getNumberData(self.cur)
-                    self.dbcon.commit()
-                except pymysql.err.OperationalError as e:
-                    print (e)
-                    time.sleep(5)
-                    self.dbcon = dbconMaster()
-                    print ("Reconnected")
-                    continue
-
-                # print(arrn)
-                changeNumbers(arrn)
-            
-            self.i += 1
-            if self.i > self.delay:
-                self.i = 0
-            # print (self.i)
-            time.sleep(1)
-
-        self.cur.close()
-        self.dbcon.close()
-        self.exFlag = True
-                
-    def stop(self):
-        self.Running = False
 
 
 loadConfig()
+getScreenData()
 
 def getCRPT():
     return ARR_CRPT
-
-def getSCREEN():
-    return ARR_SCREEN
-
-def getCONFIG():
-    loadConfig()
-    return ARR_CONFIG
-
-
-# getScreenData()
-# for x in ARR_CONFIG:
-#     print (x)
+# print (ARR_CONFIG)
+# print (ARR_SCREEN)

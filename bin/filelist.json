@@ -108,6 +108,8 @@
         "bin/counting_main.py",
         "html/log.php",
         "html/config.php",
+        "html/release.json",
+        "html/release.json.bk",
         "html/libs/logo_sidway.png",
         "html/libs/logo_pingfanghe.png",
         "html/libs/logo_pingfanghe_inv.png"

@@ -1,5 +1,6 @@
 {
-    "full_screen": "no",
+    "background": "yes",
+    "full_screen": "yes",
     "language": [
         {
             "Chinese": "数据库服务器",
@@ -36,6 +37,12 @@
             "English": "DB Name",
             "Korean": "DB 이름",
             "key": "db_name"
+        },
+        {
+            "Chinese": "背景图片",
+            "English": "Background",
+            "Korean": "배경 사진",
+            "key": "background"
         },
         {
             "Chinese": "更新间隔",
@@ -205,5 +212,5 @@
         "min": 0
     },
     "refresh_interval": 5,
-    "template": "template1.json"
+    "template": "template2.json"
 }

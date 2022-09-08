@@ -1,29 +1,36 @@
 <?php
 
-if ($_GET['fr'] == 'view_pic') {
+// if ($_GET['fr'] == 'view_pic') {
 
-}
+// }
 
 
-
-$sq = "select * from document.management where bookname = '".$_GET['fr']."' ";
-$tableBody = $sq;
-$rs = mysqli_query($connect, $sq);
-$assoc = mysqli_fetch_assoc($rs);
-$subject  = $assoc['subject'];
-if (!$$subject ) {
-    $tableBody = "no records";
-}
-// $code = "C".time().rand(0,9).rand(0,9).rand(0,9);
-// $sq = "insert into document.management(code, bookname, subject) values('".$code."', 'install', '安装Cosilan 0.95 beta')";
+// $sq = "select * from document.management where bookname = '".$_GET['fr']."' ";
 // $tableBody = $sq;
 // $rs = mysqli_query($connect, $sq);
-// print ($rs);
-$sq = "select title, body, seq from document.paragraph where pri_code='".$assoc['code']."' order by seq asc";
-$rs = mysqli_query($connect, $sq);
-$tableBody = '';
-while ($assoc = mysqli_fetch_assoc($rs)) {
-    $tableBody .= $assoc['body'];
+// $assoc = mysqli_fetch_assoc($rs);
+// $subject  = $assoc['subject'];
+// if (!$$subject ) {
+//     $tableBody = "no records";
+// }
+// // $code = "C".time().rand(0,9).rand(0,9).rand(0,9);
+// // $sq = "insert into document.management(code, bookname, subject) values('".$code."', 'install', '安装Cosilan 0.95 beta')";
+// // $tableBody = $sq;
+// // $rs = mysqli_query($connect, $sq);
+// // print ($rs);
+// $sq = "select title, body, seq from document.paragraph where pri_code='".$assoc['code']."' order by seq asc";
+// $rs = mysqli_query($connect, $sq);
+// $tableBody = '';
+// while ($assoc = mysqli_fetch_assoc($rs)) {
+//     $tableBody .= $assoc['body'];
+// }
+
+if ($_GET['fr'] == 'view') {
+	$sq = "select * from paragraph where code= '".$_GET['code']."' ";
+	$rs = mysqli_query($connect, $sq);
+	while ($assoc = mysqli_fetch_assoc($rs)) {
+		$tableBody .= $assoc['body'];
+	}	
 }
 
 

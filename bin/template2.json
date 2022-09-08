@@ -7,7 +7,7 @@
             0
         ],
         "position": [
-            100,
+            117,
             40
         ],
         "size": [
@@ -248,9 +248,9 @@
     {
         "color": [
             "red",
-            "black"
+            "white"
         ],
-        "device_info": "mac=001323A007AD&brand=CAP&model=NS6202HD",
+        "device_info": "",
         "flag": "y",
         "font": [
             "ds-digital",
@@ -461,7 +461,7 @@
         ],
         "position": [
             1300,
-            40
+            42
         ],
         "size": [
             320,
@@ -620,8 +620,8 @@
             10
         ],
         "position": [
-            594,
-            460
+            586,
+            463
         ],
         "size": [
             18,
