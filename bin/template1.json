@@ -1,14 +1,14 @@
 [
     {
         "color": [
-            "white",
+            "yellow",
             "black"
         ],
         "flag": "y",
         "font": [
             "simhei",
-            80,
-            "italic"
+            87,
+            "bold"
         ],
         "name": "title0",
         "padding": [
@@ -16,8 +16,8 @@
             0
         ],
         "position": [
-            607,
-            40
+            687,
+            80
         ],
         "size": [
             0,
@@ -28,7 +28,7 @@
     {
         "color": [
             "white",
-            "grey"
+            "orange"
         ],
         "flag": "y",
         "font": [
@@ -42,8 +42,8 @@
             20
         ],
         "position": [
-            100,
-            179
+            570,
+            259
         ],
         "size": [
             10,
@@ -68,8 +68,8 @@
             20
         ],
         "position": [
-            980,
-            200
+            1530,
+            250
         ],
         "size": [
             10,
@@ -94,7 +94,7 @@
             20
         ],
         "position": [
-            100,
+            400,
             600
         ],
         "size": [
@@ -120,7 +120,7 @@
             20
         ],
         "position": [
-            980,
+            1270,
             600
         ],
         "size": [
@@ -147,8 +147,8 @@
             0
         ],
         "position": [
-            100,
-            370
+            470,
+            380
         ],
         "rule": "sum(today:entrance)",
         "size": [
@@ -175,12 +175,12 @@
             0
         ],
         "position": [
-            980,
-            370
+            1440,
+            440
         ],
         "rule": "today:exit",
         "size": [
-            8,
+            0,
             1
         ],
         "text": ""
@@ -203,12 +203,12 @@
             0
         ],
         "position": [
-            100,
+            460,
             770
         ],
         "rule": "diff(today:entrance, today:exit)",
         "size": [
-            8,
+            0,
             1
         ],
         "text": ""
@@ -231,14 +231,15 @@
             0
         ],
         "position": [
-            980,
+            1310,
             770
         ],
         "rule": "yesterday:entrance",
         "size": [
-            8,
+            0,
             1
-        ]
+        ],
+        "text": ""
     },
     {
         "color": [
@@ -258,7 +259,7 @@
             0
         ],
         "position": [
-            1274,
+            1474,
             910
         ],
         "rule": "percent(today:entrance, yesterday:entrance)",

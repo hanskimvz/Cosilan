@@ -6,6 +6,7 @@
 > 1. Realtime screen  changes with bin/rtCounting.py, bin/rt_main.py
 > 2. Realtime screen doesn't need operate with Server side.
 > 3. support template, template doc starts with "template" as template1, template2 
+> 4. label to canvas for transparent label background
 
 #### Update function
 > 1. update 0.95 to 0.96
@@ -22,7 +23,7 @@ Todo:
 ----
 ## Ver 0.95 Beta
 ### Cosilan binary
-> db_function for database functions.
+> db_function for database functions. 
 
 #### proc_db : 
 > 2022-03-28, V0.95, sum up 3 functions (facedb, countdb, heatmapdb) to one procdb.
@@ -174,3 +175,37 @@ Todo:
 > 2021-01-27, added import 'info_to_db'
 
 
+ERROR on update
+D:\Counter\bin>python3.exe update.py
+Downloading update main file ........download com
+No module named 'cv2'
+downloading
+downloaded
+Excuting patch.py
+Python path configuration:
+  PYTHONHOME = (not set)
+  PYTHONPATH = (not set)
+  program name = 'python3.exe'
+  isolated = 0
+  environment = 1
+  user site = 1
+  import site = 1
+  sys._base_executable = 'D:\\Counter\\bin\\patch
+  sys.base_prefix = ''
+  sys.base_exec_prefix = ''
+  sys.executable = 'D:\\Counter\\bin\\patch\\pyth
+  sys.prefix = ''
+  sys.exec_prefix = ''
+  sys.path = [
+    'D:\\Counter\\bin\\patch\\python38.zip',
+    '.\\DLLs',
+    '.\\lib',
+    'D:\\Counter\\bin\\patch',
+  ]
+Fatal Python error: init_fs_encoding: failed to get the Python codec of the file
+system encoding
+Python runtime state: core initialized
+ModuleNotFoundError: No module named 'encodings'
+
+Current thread 0x00000b24 (most recent call first
+<no Python frame>

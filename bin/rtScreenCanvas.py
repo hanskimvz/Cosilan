@@ -53,7 +53,7 @@ thv = None  # video thread
 
 menus = dict()
 var = dict()
-editmode = False
+
 
 oWin = None  # option window
 
@@ -443,134 +443,44 @@ def getNumberData(cursor):
 
 
 
+
+
 ######################################################################################################################################################
 ############################################## Option Config #########################################################################################
 ######################################################################################################################################################
+
 def restartProgram():
     sys.stdout.flush()
     os.execv(sys.executable, ["python3.exe"] + sys.argv)
 
-def closeOption():
-    global oWin, editmode, ths
-    oWin.destroy()
-    oWin = None
-    editmode = False
-    ths.delay = ARR_CONFIG['refresh_interval']*10
 
+def edit_option(e=None):
+    print(e)
+    global oWin, lang, var, ARR_CONFIG, root
 
-def frame_option(e=None):
-    global oWin, var, ARR_CONFIG
-    # print(e)
+    if oWin:
+        oWin.destroy()
+    oWin = Toplevel(root)		
+    oWin.title("Configuration")
+    oWin.geometry("300x400+%d+%d" %(int(screen_width/2-150), int(screen_height/2-200)))
+    oWin.resizable(False, False)
+
     var['background'] = IntVar()
     var['refresh_interval'] = StringVar()
     var['full_screen'] = IntVar()
     var['template'] = StringVar()
     var['message_str'] = StringVar()
-    
 
     for key in ARR_CONFIG['mysql']:
         var[key] = StringVar()
         var[key].set(ARR_CONFIG['mysql'][key])
 
-    if oWin: 
-        oWin.destory()
-
-    oWin = Toplevel(root)		
-    oWin.title("Configuration")
-    oWin.geometry("300x400+%d+%d" %(int(screen_width/2-150), int(screen_height/2-200)))
-    oWin.protocol("WM_DELETE_WINDOW", closeOption)
-    oWin.resizable(False, False)
-    optionMenu(oWin)
-
-
-def optionMenu(win):
-    global ARR_CONFIG, var
-    # print (sys.executable)
-    def saveConfig():
-        global ARR_CONFIG, ARR_SCREEN, var, thd, ths, menus
-        need_restart = False
-        message ("")
-        chMysql = False
-        for key in ARR_CONFIG['mysql']:
-            if str(ARR_CONFIG['mysql'][key]).strip() != str(var[key].get()).strip():
-                print ("%s : %s" %(ARR_CONFIG['mysql'][key], var[key].get()))
-                chMysql = True
-                break
-        if chMysql:
-            try:
-                ret = dbconMaster(
-                    host = str(var['host'].get().strip()),
-                    user = str(var['user'].get().strip()), 
-                    password = str(var['password'].get().strip()),
-                    charset = str(var['charset'].get().strip()),
-                    port = int(var['port'].get().strip())
-                )
-                print (ret.ping(reconnect=False))
-                need_restart = True
-            except Exception as e:
-                print ("MYSQL Error")
-                print (e)
-                message (lang.get("check_mysql_conf"))
-                return False
-
-            for key in ARR_CONFIG['mysql']:
-                ARR_CONFIG['mysql'][key] = str(var[key].get()).strip()
-
-        try:
-            ARR_CONFIG['refresh_interval'] = int(var['refresh_interval'].get())
-        except:
-            message (lang.get("refresh_time_error"))
-            return False
-
-        # if ARR_CONFIG['template'] != var['template'].get().strip():
-        if ARR_CONFIG['template'] != template.get().strip():
-            # ARR_CONFIG['template'] = var['template'].get().strip()
-            ARR_CONFIG['template'] = template.get().strip()
-            print ("template changed")
-            need_restart = True
-
-        fx = "yes" if var['full_screen'].get() else "no"
-        if ARR_CONFIG['full_screen'] != fx:
-            ARR_CONFIG['full_screen'] = fx
-            if ARR_CONFIG['full_screen'] == "yes":
-                # root.overrideredirect(True)
-                root.attributes("-fullscreen", True)
-                root.resizable (False, False)
-            else :
-                root.overrideredirect(False)
-                root.attributes("-fullscreen", False)
-                root.resizable (True, True)
-        fb = "yes" if var['background'].get() else "no"
-        if ARR_CONFIG['background'] != fb:
-            ARR_CONFIG['background'] = fb
-            need_restart = True
-        if fb == "yes" and var.get('bgTemp'):
-            shutil.copyfile(var['bgTemp'], "%s\\bg.jpg" %_ROOT_DIR)
-            need_restart = True
-
-        json_str = json.dumps(ARR_CONFIG, ensure_ascii=False, indent=4, sort_keys=True)
-        with open("%s\\rtScreen.json" %_ROOT_DIR, "w", encoding="utf-8") as f:
-            f.write(json_str)
-        message("saved")
-        if need_restart:
-            #restart
-            sys.stdout.flush()
-            os.execv(sys.executable, ["python3.exe"] + sys.argv)
-            # os.execv("python3.exe", sys.argv)
-
-    def saveBG():
-        global oWin, var
-        fname = filedialog.askopenfilename(title="Select imagefile", filetypes=[("image", ".jpeg"),("image", ".png"),("image", ".jpg"),])
-        print(fname)
-        var['bgTemp'] = fname
-        oWin.lift()
-
-    btnFrame = Frame(win)
+    btnFrame = Frame(oWin)
     btnFrame.pack(side="bottom", pady=10)
     Button(btnFrame, text=lang['close_option'], command=closeOption, width=16).pack(side="left", padx=5)
     Button(btnFrame, text=lang['exit_program'], command=exitProgram, width=16).pack(side="right", padx=5)
 
-    dbFrame = Frame(win)
+    dbFrame = Frame(oWin)
     dbFrame.pack(side="top", pady=10)
 
     Label(dbFrame, text=lang['db_server']).grid(row=0, column=0, sticky="w", pady=2, padx=4)
@@ -590,7 +500,7 @@ def optionMenu(win):
     Entry(dbFrame, textvariable=var['charset']).grid(row=3, column=1, ipadx=3)
     Entry(dbFrame, textvariable=var['port']).grid(row=4, column=1, ipadx=3)
     Entry(dbFrame, textvariable=var['db']).grid(row=5, column=1, ipadx=3)
-    # Entry(dbFrame, textvariable=var['background']).grid(row=6, column=1, ipadx=3)
+
     cfb = Checkbutton(dbFrame, variable=var['background'])
     cfb.grid(row=6, column=1, sticky="w")
     if ARR_CONFIG['background'] == 'yes':
@@ -608,51 +518,140 @@ def optionMenu(win):
     for x in os.listdir(_ROOT_DIR):
         if x.startswith("template"):
             listTemplates.append(x)
-    template = ttk.Combobox(dbFrame, width=16, values=listTemplates)
-    template.grid(row=9, column=1, ipadx=3)
+    var['template'] = ttk.Combobox(dbFrame, width=16, values=listTemplates)
+    var['template'].grid(row=9, column=1, ipadx=3)
     Button(dbFrame, text=lang['save_changes'], command=saveConfig, width=16).grid(row=10, column=0, columnspan=2)
 
     var['refresh_interval'].set(ARR_CONFIG['refresh_interval'])
     for i, x in enumerate(listTemplates):
         if x == ARR_CONFIG['template']:
-            template.current(i)
+            var['template'].current(i)
 
+    Message(oWin, textvariable = var['message_str'], width= 300,  bd=0, relief=SOLID, foreground='red').pack(side="top")
 
-    Message(win, textvariable = var['message_str'], width= 300,  bd=0, relief=SOLID, foreground='red').pack(side="top")
+def closeOption():
+    global oWin, ths
+    oWin.destroy()
+    oWin = None
+    ths.delay = ARR_CONFIG['refresh_interval']*10
+
+def saveConfig():
+    global ARR_CONFIG, ARR_SCREEN
+    need_restart = False
+    message ("")
+    chMysql = False
+    for key in ARR_CONFIG['mysql']:
+        if str(ARR_CONFIG['mysql'][key]).strip() != str(var[key].get()).strip():
+            print ("%s : %s" %(ARR_CONFIG['mysql'][key], var[key].get()))
+            chMysql = True
+            break
+    if chMysql:
+        try:
+            ret = dbconMaster(
+                host = str(var['host'].get().strip()),
+                user = str(var['user'].get().strip()), 
+                password = str(var['password'].get().strip()),
+                charset = str(var['charset'].get().strip()),
+                port = int(var['port'].get().strip())
+            )
+            print (ret.ping(reconnect=False))
+            need_restart = True
+        except Exception as e:
+            print ("MYSQL Error")
+            print (e)
+            message (lang.get("check_mysql_conf"))
+            return False
+
+        for key in ARR_CONFIG['mysql']:
+            ARR_CONFIG['mysql'][key] = str(var[key].get()).strip()
+
+    try:
+        ARR_CONFIG['refresh_interval'] = int(var['refresh_interval'].get())
+    except:
+        message (lang.get("refresh_time_error"))
+        return False
+
+    if ARR_CONFIG['template'] != var['template'].get().strip():
+        ARR_CONFIG['template'] = var['template'].get().strip()
+        print ("template changed")
+        need_restart = True
+
+    fx = "yes" if var['full_screen'].get() else "no"
+    if ARR_CONFIG['full_screen'] != fx:
+        ARR_CONFIG['full_screen'] = fx
+        if ARR_CONFIG['full_screen'] == "yes":
+            # root.overrideredirect(True)
+            root.attributes("-fullscreen", True)
+            root.resizable (False, False)
+        else :
+            root.overrideredirect(False)
+            root.attributes("-fullscreen", False)
+            root.resizable (True, True)
+
+    fb = "yes" if var['background'].get() else "no"
+    if ARR_CONFIG['background'] != fb:
+        ARR_CONFIG['background'] = fb
+        need_restart = True
+
+    if fb == "yes" and var.get('bgTemp'):
+        shutil.copyfile(var['bgTemp'], "%s\\bg.jpg" %_ROOT_DIR)
+        need_restart = True
+
+    writeConfig()
+    message("saved")
+    if need_restart:
+        restartProgram()
+
+def saveBG():
+    global oWin, var
+    fname = filedialog.askopenfilename(title="Select imagefile", filetypes=[("image", ".jpeg"),("image", ".png"),("image", ".jpg"),])
+    print(fname)
+    var['bgTemp'] = fname
+    oWin.lift()
 
 def message(strn):
     var['message_str'].set(strn)
 
 
-
-
 #########################################################################################################
 ############################################## Screen Edit ##############################################
 #########################################################################################################
-
 def getScreenByName(name):
     global ARR_SCREEN
     for i, x in enumerate(ARR_SCREEN):
         if x['name'] == name:
             return ARR_SCREEN[i]
+    
+            
+            
 
-def edit_screen(e):
-    global ARR_SCREEN, menus, oWin, editmode
+def edit_screen(e= None):
+    global ARR_SCREEN, menus, oWin, bg_canvas
+    minx = screen_height**2 + screen_width **2
     selLabel = None
-    # print(e.widget)
-    if str(e.widget) != '.':
-        for m in menus:
-            # print (m, e.widget._name, menus[m]._name)
-            if str(e.widget._name) == str(menus[m]._name):
-                selLabel = m
-                break
+
+    for m in menus:
+        p = bg_canvas.coords(menus[m])
+        b = bg_canvas.bbox(menus[m])
+        if not p or not b:
+            continue
+        print(m, e.x, e.y, p, b)
+        if (e.x >= b[0] and e.x <= b[2] and e.y >= b[1] and e.y <= b[3]):
+            selLabel = m
+            # x = abs(p[0]-e.x)
+            # y = abs(p[1]-e.y)
+            # dist = (x**2 + y**2 )
+            # if dist < minx:
+            #     minx = dist
+            #     selLabel = m
+
     ths.delay = 1
-    editmode = True
-    print(selLabel)
-    if selLabel:
-        for m in menus:
-            menus[m].configure(borderwidth=0, relief="groove")
-        menus[selLabel].configure(borderwidth=2, relief="groove")
+    print(selLabel, minx)
+
+    # if selLabel:
+    #     for m in menus:
+    #         menus[m].configure(borderwidth=0, relief="groove")
+    #     menus[selLabel].configure(borderwidth=2, relief="groove")
 
     if oWin: 
         oWin.destroy()
@@ -660,7 +659,6 @@ def edit_screen(e):
     oWin = Toplevel(root)		
     oWin.title("Edit Screen")
     oWin.geometry("260x600+%d+%d" %(int(screen_width/2-150), int(screen_height/2-200)))
-    oWin.protocol("WM_DELETE_WINDOW", closeOption)
     oWin.resizable(True, True)
 
     btnFrame = Frame(oWin)
@@ -699,11 +697,12 @@ def frameUnFlag(win):
             Label(dbFrame, text=x['name'], anchor="w").grid(row=i, column=0)
             Checkbutton(dbFrame, variable=useFlag[x['name']]).grid(row=i, column=1)
 
-    Button(dbFrame, text=lang['save_changes'], command=updateFlag, width=16).grid(row=i, column=0, columnspan=2)         
+    Button(dbFrame, text=lang['save_changes'], command=updateFlag, width=16).grid(row=i, column=0, columnspan=2)            
 
-
+ 
 def frameScreen(win, selLabel):
     global ARR_SCREEN, ARR_CRPT, menus
+    # print(getScreenByName(selLabel))
 
     dbFrame = Frame(win)
     dbFrame.pack(side="top", pady=10)
@@ -714,6 +713,8 @@ def frameScreen(win, selLabel):
     listFontShape  = ['normal', 'bold', 'italic']
     listFontColor  = ['white', 'black', 'orange', 'blue', 'red', 'green', 'purple', 'grey', 'yellow', 'pink']
 
+
+    # arr = getCRPT()
     for dt in ARR_CRPT:
         for x in ARR_CRPT[dt]:
             if x == 'all':
@@ -724,115 +725,114 @@ def frameScreen(win, selLabel):
     listDevice.insert(0, "all") # include all
     
 
-    arr_lvar = ['display', 'font', 'fontsize', 'fontshape', 'color', 'bgcolor', 'width', 'height', 'posX', 'posY', 'padX', 'padY', 'device_info', 'rule','use', 'url']
+    arr_lvar = ['selLabel', 'display', 'font', 'fontsize', 'fontshape', 'color', 'bgcolor', 'width', 'height', 'posX', 'posY', 'padX', 'padY', 'device_info', 'rule','use', 'url']
     lvar = dict()
     elb = dict()
     ent = dict()
 
     for x in arr_lvar:
         lvar[x] = StringVar()
-
-    # def updateEntry(e):
+    
+    # def updateEntry(selLabel):
     #     message("")
-        # for l in arr_lvar:
-        #     if elb.get(l):
-        #         elb[l].grid_forget()
-        #     if ent.get(l):
-        #         ent[l].grid_forget()
-        
-        # btn_f_p.grid_forget()
-        # btn_f_m.grid_forget()
-
-        # for x in ARR_SCREEN:
-        #     if x['name'] == selLabel:
+    #     for x in ARR_SCREEN:
+    #         if x['name'] == selLabel:
                 
-                # ent['posX'].grid(row=4, column=0)
-                # ent['posY'].grid(row=4, column=1, columnspan=2)
-                # elb['width'].grid(row=6, column=0, sticky="w", pady=2, padx=4)
-                # ent['width'].grid(row=6, column=1, sticky="w", ipadx=3)
-                # ent['height'].grid(row=6, column=2, sticky="w", ipadx=3)
-                # elb['padding'].grid(row=7, column=0, sticky="w", pady=2, padx=4)
-                # ent['padX'].grid(row=7, column=1, sticky="w", ipadx=3)
-                # ent['padY'].grid(row=7, column=2, sticky="w", ipadx=3)
-                # elb['use'].grid(row=10, column=0, sticky="w", pady=2, padx=4)
-                # ent['use'].grid(row=10, column=1, sticky="w")
+    #             ent['posX'].grid(row=4, column=0)
+    #             ent['posY'].grid(row=4, column=1, columnspan=2)
+    #             # elb['width'].grid(row=6, column=0, sticky="w", pady=2, padx=4)
+    #             # ent['width'].grid(row=6, column=1, sticky="w", ipadx=3)
+    #             # ent['height'].grid(row=6, column=2, sticky="w", ipadx=3)
+    #             # elb['padding'].grid(row=7, column=0, sticky="w", pady=2, padx=4)
+    #             # ent['padX'].grid(row=7, column=1, sticky="w", ipadx=3)
+    #             # ent['padY'].grid(row=7, column=2, sticky="w", ipadx=3)
+    #             elb['use'].grid(row=10, column=0, sticky="w", pady=2, padx=4)
+    #             ent['use'].grid(row=10, column=1, sticky="w")
 
-                # lvar['width'].set(x.get('size')[0])
-                # lvar['height'].set(x.get('size')[1])
-                # lvar['posX'].set(x.get('position')[0])
-                # lvar['posY'].set(x.get('position')[1])
-                # lvar['padX'].set(x.get('padding')[0])
-                # lvar['padY'].set(x.get('padding')[1])
+    #             lvar['width'].set(x.get('size')[0])
+    #             lvar['height'].set(x.get('size')[1])
+    #             lvar['posX'].set(x.get('position')[0])
+    #             lvar['posY'].set(x.get('position')[1])
+    #             lvar['padX'].set(x.get('padding')[0])
+    #             lvar['padY'].set(x.get('padding')[1])
 
-                # if x.get('flag') == 'y':
-                #     ent['use'].select()
-                # else :
-                #     ent['use'].deselect()
+    #             if x.get('flag') == 'y':
+    #                 ent['use'].select()
+    #             else :
+    #                 ent['use'].deselect()
 
-                # if selLabel.startswith('picture') :
-                #     elb['url'].grid(row=1, column=0, sticky="w", pady=2, padx=4)
-                #     ent['url'].grid(row=1, column=1, columnspan=2, sticky="w")
-                #     lvar['url'].set(x.get('url'))
+    #             if selLabel.startswith('picture') :
+    #                 elb['width'].grid(row=6, column=0, sticky="w", pady=2, padx=4)
+    #                 ent['width'].grid(row=6, column=1, sticky="w", ipadx=3)
+    #                 ent['height'].grid(row=6, column=2, sticky="w", ipadx=3)
 
-                # elif selLabel.startswith('snapshot') or selLabel.startswith('video'):
-                #     elb['device_info'].grid(row=1, column=0, sticky="w", pady=2, padx=4)
-                #     ent['device_info'].grid(row=1, column=1, columnspan=2, sticky="w")
-                #     lvar['device_info'].set(x.get('device_info'))
-                #     ent['device_info'].configure(values=listDev)
-                #     for i, ft in enumerate(listDev):
-                #         if x.get('device_info') == ft:
-                #             ent['device_info'].current(i)
+    #                 elb['url'].grid(row=1, column=0, sticky="w", pady=2, padx=4)
+    #                 ent['url'].grid(row=1, column=1, columnspan=2, sticky="w")
+    #                 lvar['url'].set(x.get('url'))
+
+    #             elif selLabel.startswith('snapshot') or selLabel.startswith('video'):
+    #                 elb['width'].grid(row=6, column=0, sticky="w", pady=2, padx=4)
+    #                 ent['width'].grid(row=6, column=1, sticky="w", ipadx=3)
+    #                 ent['height'].grid(row=6, column=2, sticky="w", ipadx=3)
+
+    #                 elb['device_info'].grid(row=1, column=0, sticky="w", pady=2, padx=4)
+    #                 ent['device_info'].grid(row=1, column=1, columnspan=2, sticky="w")
+    #                 lvar['device_info'].set(x.get('device_info'))
+    #                 ent['device_info'].configure(values=listDev)
+    #                 for i, ft in enumerate(listDev):
+    #                     if x.get('device_info') == ft:
+    #                         ent['device_info'].current(i)
                     
 
-                # else :
-                #     btn_f_p.grid(row=1, column=1)
-                #     btn_f_m.grid(row=1, column=2)
-                #     ent['fontsize'].grid(row=4, column=3)
+    #             else :
+    #                 btn_f_p.grid(row=1, column=1)
+    #                 btn_f_m.grid(row=1, column=2)
+    #                 ent['fontsize'].grid(row=4, column=3)
 
-                #     elb['font'].grid(row=2, column=0, sticky="w", pady=2, padx=4)
-                #     ent['font'].grid(row=2, column=1, columnspan=2, sticky="w")
-                #     elb['fontshape'].grid(row=3, column=0, sticky="w", pady=2, padx=4)
-                #     ent['fontshape'].grid(row=3, column=1, columnspan=2, sticky="w")
-                #     elb['color'].grid(row=4, column=0, sticky="w", pady=2, padx=4)
-                #     ent['color'].grid(row=4, column=1, columnspan=2, sticky="w")
-                #     elb['bgcolor'].grid(row=5, column=0, sticky="w", pady=2, padx=4)
-                #     ent['bgcolor'].grid(row=5, column=1, columnspan=2, sticky="w")
+    #                 elb['font'].grid(row=2, column=0, sticky="w", pady=2, padx=4)
+    #                 ent['font'].grid(row=2, column=1, columnspan=2, sticky="w")
+    #                 elb['fontshape'].grid(row=3, column=0, sticky="w", pady=2, padx=4)
+    #                 ent['fontshape'].grid(row=3, column=1, columnspan=2, sticky="w")
+    #                 elb['color'].grid(row=4, column=0, sticky="w", pady=2, padx=4)
+    #                 ent['color'].grid(row=4, column=1, columnspan=2, sticky="w")
+    #                 # elb['bgcolor'].grid(row=5, column=0, sticky="w", pady=2, padx=4)
+    #                 # ent['bgcolor'].grid(row=5, column=1, columnspan=2, sticky="w")
 
-                #     for i, ft in enumerate(listFontFamily):
-                #         if x.get('font')[0] == ft:
-                #             ent['font'].current(i)
-                #     lvar['fontsize'].set(x.get('font')[1])
+    #                 for i, ft in enumerate(listFontFamily):
+    #                     if x.get('font')[0] == ft:
+    #                         ent['font'].current(i)
+    #                 lvar['fontsize'].set(x.get('font')[1])
 
-                #     for i, ft in enumerate(listFontShape):
-                #         if x.get('font')[2] == ft:
-                #             ent['fontshape'].current(i)
+    #                 for i, ft in enumerate(listFontShape):
+    #                     if x.get('font')[2] == ft:
+    #                         ent['fontshape'].current(i)
 
-                #     for i, ft in enumerate(listFontColor):
-                #         if x.get('color')[0] == ft:
-                #             ent['color'].current(i)
+    #                 for i, ft in enumerate(listFontColor):
+    #                     if x.get('color')[0] == ft:
+    #                         ent['color'].current(i)
 
-                #     for i, ft in enumerate(listFontColor):
-                #         if x.get('color')[1] == ft:
-                #             ent['bgcolor'].current(i)
+    #                 for i, ft in enumerate(listFontColor):
+    #                     if x.get('color')[1] == ft:
+    #                         ent['bgcolor'].current(i)
 
-                #     if selLabel.startswith('number'):
-                #         elb['device_info'].grid(row=8, column=0, sticky="w", pady=2, padx=4)
-                #         ent['device_info'].grid(row=8, column=1, columnspan=2, sticky="w")
-                #         elb['rule'].grid(row=9, column=0, sticky="w", pady=2, padx=4)
-                #         ent['rule'].grid(row=9, column=1, columnspan=2, sticky="w", ipadx=3)
-                #         ent['device_info'].configure(values=listDevice)
-                #         for i, ft in enumerate(listDevice):
-                #             if x.get('device_info') == ft:
-                #                 ent['device_info'].current(i)                        
-                #         # for i, ft in enumerate(listDevice):
-                #         #     if x.get('device_info') == ft:
-                #         #         ent['device_info'].current(i)
+    #                 if selLabel.startswith('number'):
+    #                     elb['device_info'].grid(row=8, column=0, sticky="w", pady=2, padx=4)
+    #                     ent['device_info'].grid(row=8, column=1, columnspan=2, sticky="w")
+    #                     elb['rule'].grid(row=9, column=0, sticky="w", pady=2, padx=4)
+    #                     ent['rule'].grid(row=9, column=1, columnspan=2, sticky="w", ipadx=3)
+    #                     ent['device_info'].configure(values=listDevice)
+    #                     for i, ft in enumerate(listDevice):
+    #                         if x.get('device_info') == ft:
+    #                             ent['device_info'].current(i)                        
+    #                     # for i, ft in enumerate(listDevice):
+    #                     #     if x.get('device_info') == ft:
+    #                     #         ent['device_info'].current(i)
 
-                #         lvar['rule'].set(x.get('rule'))
-                #     else :
-                #         elb['display'].grid(row=1, column=0, sticky="w", pady=2, padx=4)
-                #         ent['display'].grid(row=1, column=1, columnspan=2, sticky="w", ipadx=3)
-                #         lvar['display'].set(x.get('text'))
+    #                     lvar['rule'].set(x.get('rule'))
+    #                 else :
+    #                     elb['display'].grid(row=1, column=0, sticky="w", pady=2, padx=4)
+    #                     ent['display'].grid(row=1, column=1, columnspan=2, sticky="w", ipadx=3)
+    #                     lvar['display'].set(x.get('text'))
 
     def saveScreen():
         global ARR_CONFIG
@@ -889,9 +889,6 @@ def frameScreen(win, selLabel):
         # print (arr)
         writeTemplate()
         message("saved")
-        # json_str = json.dumps(arr, ensure_ascii=False, indent=4, sort_keys=True)
-        # with open("%s\\%s" %(_ROOT_DIR, ARR_CONFIG['template']), "w", encoding="utf-8") as f:
-        #     f.write(json_str)
 
     def movePos(d, v):
         lvar[d].set(str(int(lvar[d].get()) + int(v)))
@@ -912,6 +909,7 @@ def frameScreen(win, selLabel):
         lvar['url'].set(fname)
         oWin.lift()
 
+    Entry(dbFrame, textvariable=lvar['selLabel'])
     # Text
     elb['display'] = Label(dbFrame, text=lang['display'])
     ent['display'] = Entry(dbFrame, textvariable=lvar['display'], width=22)
@@ -984,14 +982,9 @@ def frameScreen(win, selLabel):
     Message(win, textvariable = var['message_str'], width= 200,  bd=0, relief=SOLID, foreground='red').pack(side="top")
 
     x = getScreenByName(selLabel)
+
     ent['posX'].grid(row=4, column=0)
     ent['posY'].grid(row=4, column=1, columnspan=2)
-    elb['width'].grid(row=6, column=0, sticky="w", pady=2, padx=4)
-    ent['width'].grid(row=6, column=1, sticky="w", ipadx=3)
-    ent['height'].grid(row=6, column=2, sticky="w", ipadx=3)
-    elb['padding'].grid(row=7, column=0, sticky="w", pady=2, padx=4)
-    ent['padX'].grid(row=7, column=1, sticky="w", ipadx=3)
-    ent['padY'].grid(row=7, column=2, sticky="w", ipadx=3)
     elb['use'].grid(row=10, column=0, sticky="w", pady=2, padx=4)
     ent['use'].grid(row=10, column=1, sticky="w")
 
@@ -1007,21 +1000,26 @@ def frameScreen(win, selLabel):
     else :
         ent['use'].deselect()
 
-    if selLabel.startswith('picture') :
-        elb['url'].grid(row=1, column=0, sticky="w", pady=2, padx=4)
-        ent['url'].grid(row=1, column=1, columnspan=2, sticky="w")
-        lvar['url'].set(x.get('url'))
+    if selLabel.startswith('picture') or selLabel.startswith('snapshot') or selLabel.startswith('video') or selLabel.startswith('mjpeg'):
+        elb['width'].grid(row=6, column=0, sticky="w", pady=2, padx=4)
+        ent['width'].grid(row=6, column=1, sticky="w", ipadx=3)
+        ent['height'].grid(row=6, column=2, sticky="w", ipadx=3)
 
-    elif selLabel.startswith('snapshot') or selLabel.startswith('video'):
-        elb['device_info'].grid(row=1, column=0, sticky="w", pady=2, padx=4)
-        ent['device_info'].grid(row=1, column=1, columnspan=2, sticky="w")
-        lvar['device_info'].set(x.get('device_info'))
-        ent['device_info'].configure(values=listDev)
-        for i, ft in enumerate(listDev):
-            if x.get('device_info') == ft:
-                ent['device_info'].current(i)
-        
+        if selLabel.startswith('picture') : # image from file
+            elb['url'].grid(row=1, column=0, sticky="w", pady=2, padx=4)
+            ent['url'].grid(row=1, column=1, columnspan=2, sticky="w")
+            lvar['url'].set(x.get('url'))
 
+        else : # image from device
+            elb['device_info'].grid(row=1, column=0, sticky="w", pady=2, padx=4)
+            ent['device_info'].grid(row=1, column=1, columnspan=2, sticky="w")
+            lvar['device_info'].set(x.get('device_info'))
+            ent['device_info'].configure(values=listDev)
+            for i, ft in enumerate(listDev):
+                if x.get('device_info') == ft:
+                    ent['device_info'].current(i)
+    
+    # Text, Number        
     else :
         btn_f_p.grid(row=1, column=1)
         btn_f_m.grid(row=1, column=2)
@@ -1033,8 +1031,6 @@ def frameScreen(win, selLabel):
         ent['fontshape'].grid(row=3, column=1, columnspan=2, sticky="w")
         elb['color'].grid(row=4, column=0, sticky="w", pady=2, padx=4)
         ent['color'].grid(row=4, column=1, columnspan=2, sticky="w")
-        elb['bgcolor'].grid(row=5, column=0, sticky="w", pady=2, padx=4)
-        ent['bgcolor'].grid(row=5, column=1, columnspan=2, sticky="w")
 
         for i, ft in enumerate(listFontFamily):
             if x.get('font')[0] == ft:
@@ -1049,9 +1045,9 @@ def frameScreen(win, selLabel):
             if x.get('color')[0] == ft:
                 ent['color'].current(i)
 
-        for i, ft in enumerate(listFontColor):
-            if x.get('color')[1] == ft:
-                ent['bgcolor'].current(i)
+        # for i, ft in enumerate(listFontColor):
+        #     if x.get('color')[1] == ft:
+        #         ent['bgcolor'].current(i)
 
         if selLabel.startswith('number'):
             elb['device_info'].grid(row=8, column=0, sticky="w", pady=2, padx=4)
@@ -1074,142 +1070,193 @@ def frameScreen(win, selLabel):
 
 
 
-def exitProgram(event=None):
-    global ths, thd, thv, oWin, root
-    print ("Exit Program")
-   
-    for i in range(100):
-        r = True
-        s = ""
-        if oWin:
-            closeOption()
+#################################################################################################################################################
+################################################################# GUI SCREEN  ###################################################################
+#################################################################################################################################################
 
-        if ths:
-            ths.stop()
-            ths.Running = 0
-            s += "ths: alive %s, ex %s " %(str(ths.is_alive()), str(ths.exFlag))
-            r &= not (ths.is_alive())
-            r &= ths.exFlag
-        if thd:
-            thd.stop()
-            thd.Running = 0
-            s += "  thd: alive %s, ex %s " %(str(thd.is_alive()), str(thd.exFlag))
-            r &= not (thd.is_alive())
-            r &= thd.exFlag
-        # if thv:
-        #     thv.stop()
-        #     thv.Running = 0
-        #     r &= thv.exFlag
-        if i>10:
-            sys.stdout.flush()
+# def forgetLabel(label):
+#     global menus
+#     menus[label].place_forget()
 
+# def putSectionsx():
+#     global ARR_SCREEN, root, var, menus, editmode, bg_canvas
+#     # print (root, editmode, selLabel)
+#     for rs in ARR_SCREEN:
+#         name = rs.get('name')
+#         if not (name.startswith('title') or name.startswith('label') or name.startswith('number') or name.startswith('snapshot') or name.startswith('video') or name.startswith('picture')):
+#             continue
+
+#         if not name in menus:
+#             menus[name] = Label(root)
+#             var[name] = StringVar()
+#             menus[name].configure(textvariable = var[name])
+#             print("create label %s" %name)
+#             # menus[name].bind('<Double-Button-1>', lambda event: edit_screen(name))
+
+#         if rs.get('flag') == 'n':
+#             menus[name].place_forget()
+#             continue
+                
+#         if rs.get('text'):
+#             var[name].set(rs['text'])
+
+#         if rs.get('font'):
+#             menus[name].configure(font=tuple(rs['font']))
+#         if rs.get('color'):
+#             menus[name].configure(fg=rs['color'][0], bg=rs['color'][1])
+
+#         if rs.get('padding'):
+#             menus[name].configure(padx=rs['padding'][0], pady=rs['padding'][1])
         
-        print (i, r, s)
+#         w, h = int(rs['size'][0]), int(rs['size'][1]) if rs.get('size') else (0, 0)
+#         posx, posy = (int(rs['position'][0]), int(rs['position'][1])) if rs.get('position') else (0, 0)
 
-        if r:
-            break
-        time.sleep(0.5)
+#         if name.startswith('number'):
+#             menus[name].configure(anchor='e')
+#         elif name.startswith('picture') :
+#             imgPath = rs.get('url')
+#             if not (imgPath and os.path.isfile(imgPath)):
+#                 imgPath = "cam.jpg"
+#             img = cv.imread(imgPath)
+#             img = cv.cvtColor(img, cv.COLOR_BGR2RGB)
+#             img = Image.fromarray(img)
+#             img = img.resize((w, h), Image.LANCZOS)
+#             imgtk = ImageTk.PhotoImage(image=img)
+#             # menus[name].create_image(0, 0, anchor="nw", image=imgtk)
+#             menus[name].configure(image=imgtk)
+#             menus[name].photo=imgtk # phtoimage bug
+#             # imgPathOld[name] = imgPath
 
-    # root.overrideredirect(False)
-    # root.attributes("-fullscreen", False)
-    time.sleep(1)
-    root.destroy()
-    root.quit()
-    print ("destroyed root")
-    sys.stdout.flush()
-    # raise SystemExit()
-    # sys.exit()
-    # print ("sys.exit()")
+#         elif name.startswith('snapshot'):
+#             if rs.get('device_info') :
+#                 USE_SNAPSHOT = True
+#         elif name.startswith('video'):
+#             if rs.get('url') :
+#                 USE_VIDEO = True
+#         if not editmode:
+#               menus[name].configure(borderwidth=0)
 
+#         # if editmode and  selLabel == name:
+#         #     menus[name].configure(borderwidth=2, relief="groove")
+#         # else :
+#         #     menus[name].configure(borderwidth=0)
 
-#################################################################################################
-######################### GUI ###################################################################
-#################################################################################################
-def forgetLabel(label):
-    global menus
-    menus[label].place_forget()
+#         menus[name].configure(width=w, height=h)
+#         menus[name].place(x=posx, y=posy)
+
 
 def putSections():
-    global ARR_SCREEN, root, var, menus, editmode
-    # print (root, editmode, selLabel)
+    global ARR_SCREEN, root, var, menus, bg_canvas, imglist
+    # print (root, selLabel)
+    def mk_menu(name):
+        if name.startswith('title') or name.startswith('label') or name.startswith('number'):
+            menus[name] = bg_canvas.create_text(0,0, text="")
+           
+        else :
+            menus[name] = bg_canvas.create_image(0,0,)
+
     for rs in ARR_SCREEN:
         name = rs.get('name')
         if not (name.startswith('title') or name.startswith('label') or name.startswith('number') or name.startswith('snapshot') or name.startswith('video') or name.startswith('picture')):
             continue
 
         if not name in menus:
-            menus[name] = Label(root)
-            var[name] = StringVar()
-            menus[name].configure(textvariable = var[name], anchor="center")
-            print("create label %s" %name)
-            # menus[name].bind('<Double-Button-1>', lambda event: edit_screen(name))
+            mk_menu(name)
+            print("create cavas_text %s" %name)
 
         if rs.get('flag') == 'n':
-            menus[name].place_forget()
+            bg_canvas.delete(menus[name])
             continue
                 
         if rs.get('text'):
-            var[name].set(rs['text'])
+            bg_canvas.itemconfig(menus[name],text=rs['text'])
+            # bg_canvas.itemconfig(menus[name], borderwidth=2, bordercolor="red")
+
 
         if rs.get('font'):
-            menus[name].configure(font=tuple(rs['font']))
+            bg_canvas.itemconfig(menus[name],font=tuple(rs['font']))
+
         if rs.get('color'):
-            if not rs['color'][1]:
-                rs['color'][1] = "black"
+            bg_canvas.itemconfig(menus[name], fill=rs['color'][0])
 
-            menus[name].configure(fg=rs['color'][0], bg=rs['color'][1])
-
-        if rs.get('padding'):
-            menus[name].configure(padx=rs['padding'][0], pady=rs['padding'][1])
-        
-        w, h = int(rs['size'][0]), int(rs['size'][1]) if rs.get('size') else (0, 0)
         posx, posy = (int(rs['position'][0]), int(rs['position'][1])) if rs.get('position') else (0, 0)
+        abs_pos = bg_canvas.coords(menus[name])
 
-        if name.startswith('number'):
-            menus[name].configure(anchor='e')
-        elif name.startswith('picture') :
+        if abs_pos:
+            posx -= int(abs_pos[0])
+            posy -= int(abs_pos[1])
+        else:
+            mk_menu(name)
+            continue
+
+        bg_canvas.move(menus[name], posx, posy)
+        if name.startswith('picture'):
             imgPath = rs.get('url')
+            w, h = int(rs['size'][0]), int(rs['size'][1]) if rs.get('size') else (100, 100)
             if not (imgPath and os.path.isfile(imgPath)):
                 imgPath = "cam.jpg"
             img = cv.imread(imgPath)
             img = cv.cvtColor(img, cv.COLOR_BGR2RGB)
             img = Image.fromarray(img)
-            img = img.resize((w, h), Image.LANCZOS)
-            imgtk = ImageTk.PhotoImage(image=img)
-            # menus[name].create_image(0, 0, anchor="nw", image=imgtk)
-            menus[name].configure(image=imgtk)
-            menus[name].photo=imgtk # phtoimage bug
-            # imgPathOld[name] = imgPath
+            img = img.resize((w,h))
+            # Since you use same variable image for all the images created in the for loop, 
+            # only the last image is referenced by image and the previous images will be garbage collected.
+            # variable must be global not for being garbage collected.
+            imglist[name]  = ImageTk.PhotoImage(image=img)
+            bg_canvas.itemconfig(menus[name], image=imglist[name] , anchor="center")
+            
+        # elif name.startswith('video'):
+        #     if not name in imglist:
+        #         print (rs['url'])
+        #         url = "rtsp://192.168.1.28:554/ufirststream"
+        #         # imglist[name] = LoadStreams(url)
 
-        elif name.startswith('snapshot'):
-            if rs.get('device_info') :
-                USE_SNAPSHOT = True
-        elif name.startswith('video'):
-            if rs.get('url') :
-                USE_VIDEO = True
-        if not editmode:
-              menus[name].configure(borderwidth=0)
+        # if name.startswith('number'):
+        #     menus[name].configure(anchor='e')
+        # elif name.startswith('picture') :
+        #     imgPath = rs.get('url')
+        #     if not (imgPath and os.path.isfile(imgPath)):
+        #         imgPath = "cam.jpg"
+        #     img = cv.imread(imgPath)
+        #     img = cv.cvtColor(img, cv.COLOR_BGR2RGB)
+        #     img = Image.fromarray(img)
+        #     img = img.resize((w, h), Image.LANCZOS)
+        #     imgtk = ImageTk.PhotoImage(image=img)
+        #     # menus[name].create_image(0, 0, anchor="nw", image=imgtk)
+        #     menus[name].configure(image=imgtk)
+        #     menus[name].photo=imgtk # phtoimage bug
+        #     # imgPathOld[name] = imgPath
 
-        # if editmode and  selLabel == name:
-        #     menus[name].configure(borderwidth=2, relief="groove")
-        # else :
-        #     menus[name].configure(borderwidth=0)
-        menus[name].configure(width=w, height=h)
-        if name.startswith('title') or name.startswith('label') or name.startswith('number') :
-            menus[name].place(x=posx-(w*rs['font'][1]//2), y=posy-(h*rs['font'][1]//2))
-        else :
-            menus[name].place(x=posx-(w//2), y=posy-(h//2))
+        # elif name.startswith('snapshot'):
+        #     if rs.get('device_info') :
+        #         USE_SNAPSHOT = True
+        # elif name.startswith('video'):
+        #     if rs.get('url') :
+        #         USE_VIDEO = True
+        # if not editmode:
+        #       menus[name].configure(borderwidth=0)
+
+        # # if editmode and  selLabel == name:
+        # #     menus[name].configure(borderwidth=2, relief="groove")
+        # # else :
+        # #     menus[name].configure(borderwidth=0)
+
+        # menus[name].configure(width=w, height=h)
+        # menus[name].place(x=posx, y=posy)
+
+    # print(imglist)   
 
 
+        
 
 def changeNumbers(arr):
+    global bg_canvas, menus
     for rs in arr:
-        if var.get(rs['name']):
-            var[rs['name']].set(rs.get('text'))
-
+        # print (rs['name'], rs.get('text'))
+        bg_canvas.itemconfig(menus[rs['name']], text=rs.get('text'))
 
 def changeSnapshot(cursor):
-    global ARR_SCREEN, menus
+    global ARR_SCREEN, menus, imglist
     for rs in ARR_SCREEN:
         name = rs.get('name')
         w, h = int(rs['size'][0]), int(rs['size'][1]) if rs.get('size') else (0, 0)
@@ -1227,113 +1274,193 @@ def changeSnapshot(cursor):
             img = cv.cvtColor(img, cv.COLOR_BGR2RGB)
             img = Image.fromarray(img)
             img = img.resize((w, h), Image.LANCZOS)
-            imgtk = ImageTk.PhotoImage(image=img)
+            imglist[name]  = ImageTk.PhotoImage(image=img)
+            bg_canvas.itemconfig(menus[name], image=imglist[name] , anchor="center")
             # menus[name].create_image(0, 0, anchor="nw", image=imgtk)
-            menus[name].configure(image=imgtk)
-            menus[name].photo=imgtk # phtoimage bug
+            # menus[name].configure(image=imgtk)
+            # menus[name].photo=imgtk # phtoimage bug
             # imgPathOld[name] = imgPath
+        # elif name.startswith('video'):
+        #     try :
+        #         for frame_idx, img in enumerate(imglist[name]):
+        #             cv.imshow('vidwo', img)
+        #     except:
+        #         imglist[name].stop()
 
-
-
-class playVideo():
-    def __init__(self, label_n, cap):
-        self.cap = cap
-        self.interval = 10 
-        self.label= label_n
-        self.w = 640
-        self.h = 320
-    def run(self):
-        self.update_image()
-
-    def update_image(self):    
-        # Get the latest frame and convert image format
-        self.OGimage = cv.cvtColor(self.cap.read()[1], cv.COLOR_BGR2RGB) # to RGB
-        self.OGimage = Image.fromarray(self.OGimage) # to PIL format
-        self.image = self.OGimage.resize((self.w, self.h), Image.ANTIALIAS)
-        self.image = ImageTk.PhotoImage(self.image) # to ImageTk format
-        # Update image
-        self.label.configure(image=self.image)
-        # Repeat every 'interval' ms
-        self.label.after(self.interval, self.update_image)
-
-class showPicture(threading.Thread):
-    def __init__(self):
-        threading.Thread.__init__(self)
-        self.delay = ARR_CONFIG['refresh_interval']
+class LoadStreams:  # multiple IP or RTSP cameras
+    def __init__(self, s='streams.txt', img_size=640):
+        self.img_size = img_size
+        self.capture = None
         self.Running = True
-        self.exFlag = False
-        self.i = 0
 
-    def run(self):
-        imgPathOld =  dict()
-        thx = dict()
-        cap=None
-        while self.Running :
-            if self.i == 0:
-                for rs in ARR_SCREEN:
-                    name  = rs.get('name')
-                    if rs.get('flag')=='n':
-                        continue
-                    if not name in menus:
-                        menus[name] = Label(root, borderwidth=0)
-                        # menus[name] = Canvas(root)
+        cap = cv.VideoCapture(eval(s) if s.isnumeric() else s)
+        assert cap.isOpened(), 'Failed to open %s' % s
+        w = int(cap.get(cv.CAP_PROP_FRAME_WIDTH))
+        h = int(cap.get(cv.CAP_PROP_FRAME_HEIGHT))
+        fps = cap.get(cv.CAP_PROP_FPS) % 100
+        _, self.imgs = cap.read()  # guarantee first frame
+        thread = threading.Thread(target=self.update, args=(cap,), daemon=True)
+        print('success (%gx%g at %.2f FPS).' % (w, h, fps))
+        thread.start()
+        print('')  # newline
+        self.capture = cap
 
-                    if name.startswith('picture') :
-                        imgPath = rs.get('url')
-                        w, h = rs.get('size')
-                        if not imgPath :
-                            continue
-                        print (imgPath)
-                        img = cv.imread(imgPath)
-                        # img = cv.resize(img, (int(w), int(h)))
-                        img = Image.fromarray(img)
-                        img = img.resize((int(w), int(h)), Image.LANCZOS)
-                        imgtk = ImageTk.PhotoImage(image=img)
-                        # menus[name].create_image(0, 0, anchor="nw", image=imgtk)
-                        menus[name].configure(image=imgtk)
-                        menus[name].photo=imgtk # phtoimage bug
-                        menus[name].configure(width=int(w), height=int(h))
-                        menus[name].place(x=int(rs['position'][0]), y=int(rs['position'][1]))
-                        imgPathOld[name] = imgPath
-                    
-                    elif name.startswith('video'):
-                       
-                        imgPath = rs.get('url')
-                        w, h = rs.get('size')
-                        if not imgPath:
-                            continue
-                        print (imgPath)
-                        if imgPathOld.get(name) != imgPath:
-                            if cap:
-                                cap.release()
-                            cap = cv.VideoCapture(imgPath)
-                            thx[name] = playVideo(menus[name], cap)
-                            thx[name].run()
-                            print ("cap init")
-                            imgPathOld[name] = imgPath
-                        menus[name].configure(width=int(w), height=int(h))
-                        thx[name].w = int(w)
-                        thx[name].h = int(h)
-                        menus[name].place(x=int(rs['position'][0]), y=int(rs['position'][1]))
-                            
-                            
-                        
-                        if self.Running == False:
-                            cap.release()
-                            cv.destroyAllWindows()
-                            break
-                    
-            self.i += 1
-            if self.i > self.delay:
-                self.i = 0
-            # print (self.i)
-            time.sleep(1)
-        # if cap:
-        #     cap.release()
-        self.exFlag = True       
+    def update(self, cap):
+        while cap.isOpened() and self.Running:
+            cap.grab()
+            _, self.imgs = cap.retrieve()
+            time.sleep(0.01)  # wait time
+
+    def __iter__(self):
+        self.count = -1
+        return self
+
+    def __next__(self):
+        self.count += 1
+        # img = self.imgs.copy()
+        if cv.waitKey(1) == ord('q'):  # q to quit
+            self.capture.release()
+            print("raise stopiteration")
+            raise StopIteration
+
+        # return img 
+        return self.imgs
+
+    def __len__(self):
+        return 0  # 1E12 frames = 32 streams at 30 FPS for 30 years
 
     def stop(self):
         self.Running = False
+        print("stop!")
+
+class playVideo(threading.Thread):
+    def __init__(self, url):
+        threading.Thread.__init__(self)
+        self.capture = None
+        self.Running = True
+        cap = cv.VideoCapture(url)
+        assert cap.isOpened(), 'Failed to open %s' %url 
+        w = int(cap.get(cv.CAP_PROP_FRAME_WIDTH))
+        h = int(cap.get(cv.CAP_PROP_FRAME_HEIGHT))
+        fps = cap.get(cv.CAP_PROP_FPS) % 100
+
+        _, self.imgs = cap.read()
+        # self.interval = 10 
+        # self.label= label_n
+        # self.w = 640
+        # self.h = 320
+        self.capture = cap
+
+    def run(self):
+        while self.capture.isOpened():
+            _, self.imgs = self.capture.read()
+
+            if cv.waitKey(1) == ord('q'):  # q to quit
+                break
+            cv.imshow("video", self.imgs)
+        
+        self.capture.release()
+        print("raise stopiteration")
+    
+    def stop(self):
+        self.Running = False
+        
+        
+
+        
+        
+        # self.update_image()
+
+
+    # def update_image(self):    
+    #     # Get the latest frame and convert image format
+    #     self.OGimage = cv.cvtColor(self.cap.read()[1], cv.COLOR_BGR2RGB) # to RGB
+    #     self.OGimage = Image.fromarray(self.OGimage) # to PIL format
+    #     self.image = self.OGimage.resize((self.w, self.h), Image.ANTIALIAS)
+    #     self.image = ImageTk.PhotoImage(self.image) # to ImageTk format
+    #     # Update image
+    #     self.label.configure(image=self.image)
+    #     # Repeat every 'interval' ms
+    #     self.label.after(self.interval, self.update_image)
+
+# class showPicture(threading.Thread):
+#     def __init__(self):
+#         threading.Thread.__init__(self)
+#         self.delay = ARR_CONFIG['refresh_interval']
+#         self.Running = True
+#         self.exFlag = False
+#         self.i = 0
+
+#     def run(self):
+#         imgPathOld =  dict()
+#         thx = dict()
+#         cap=None
+#         while self.Running :
+#             if self.i == 0:
+#                 for rs in ARR_SCREEN:
+#                     name  = rs.get('name')
+#                     if rs.get('flag')=='n':
+#                         continue
+#                     if not name in menus:
+#                         menus[name] = Label(root, borderwidth=0)
+#                         # menus[name] = Canvas(root)
+
+#                     if name.startswith('picture') :
+#                         imgPath = rs.get('url')
+#                         w, h = rs.get('size')
+#                         if not imgPath :
+#                             continue
+#                         print (imgPath)
+#                         img = cv.imread(imgPath)
+#                         # img = cv.resize(img, (int(w), int(h)))
+#                         img = Image.fromarray(img)
+#                         img = img.resize((int(w), int(h)), Image.LANCZOS)
+#                         imgtk = ImageTk.PhotoImage(image=img)
+#                         # menus[name].create_image(0, 0, anchor="nw", image=imgtk)
+#                         menus[name].configure(image=imgtk)
+#                         menus[name].photo=imgtk # phtoimage bug
+#                         menus[name].configure(width=int(w), height=int(h))
+#                         menus[name].place(x=int(rs['position'][0]), y=int(rs['position'][1]))
+#                         imgPathOld[name] = imgPath
+                    
+#                     elif name.startswith('video'):
+                       
+#                         imgPath = rs.get('url')
+#                         w, h = rs.get('size')
+#                         if not imgPath:
+#                             continue
+#                         print (imgPath)
+#                         if imgPathOld.get(name) != imgPath:
+#                             if cap:
+#                                 cap.release()
+#                             cap = cv.VideoCapture(imgPath)
+#                             thx[name] = playVideo(menus[name], cap)
+#                             thx[name].run()
+#                             print ("cap init")
+#                             imgPathOld[name] = imgPath
+#                         menus[name].configure(width=int(w), height=int(h))
+#                         thx[name].w = int(w)
+#                         thx[name].h = int(h)
+#                         menus[name].place(x=int(rs['position'][0]), y=int(rs['position'][1]))
+                            
+                            
+                        
+#                         if self.Running == False:
+#                             cap.release()
+#                             cv.destroyAllWindows()
+#                             break
+                    
+#             self.i += 1
+#             if self.i > self.delay:
+#                 self.i = 0
+#             # print (self.i)
+#             time.sleep(1)
+#         # if cap:
+#         #     cap.release()
+#         self.exFlag = True       
+
+#     def stop(self):
+#         self.Running = False
 
 class procScreen(threading.Thread):
     def __init__(self):
@@ -1347,7 +1474,7 @@ class procScreen(threading.Thread):
         while self.Running :
             if self.i == 0 :
                 # getScreenData()
-                putSections()
+                   putSections()
 
             self.i += 1
             if self.i > self.delay:
@@ -1414,61 +1541,133 @@ class getDataThread(threading.Thread):
         self.Running = False
 
 
+def exitProgram(event=None):
+    global ths, thd, thv, oWin, root
+    print ("Exit Program")
+   
+    for i in range(100):
+        r = True
+        s = ""
+        if oWin:
+            oWin.destroy()
+
+        if ths:
+            ths.stop()
+            ths.Running = 0
+            s += "ths: alive %s, ex %s " %(str(ths.is_alive()), str(ths.exFlag))
+            r &= not (ths.is_alive())
+            r &= ths.exFlag
+
+        if thd:
+            thd.stop()
+            thd.Running = 0
+            s += "  thd: alive %s, ex %s " %(str(thd.is_alive()), str(thd.exFlag))
+            r &= not (thd.is_alive())
+            r &= thd.exFlag
+
+        # if thv:
+        #     thv.stop()
+        #     thv.Running = 0
+        #     r &= thv.exFlag
+
+        if i>10:
+            sys.stdout.flush()
+
+        
+        print (i, r, s)
+
+        if r:
+            break
+        time.sleep(0.5)
+
+    # root.overrideredirect(False)
+    # root.attributes("-fullscreen", False)
+    time.sleep(1)
+    root.destroy()
+    root.quit()
+    print ("destroyed root")
+    sys.stdout.flush()
+    # raise SystemExit()
+    # sys.exit()
+    # print ("sys.exit()")
+
+
+class NewCanvas(Canvas):
+    def create_border_text(self, x, y, text="Under developing", borderwidth=None, bordercolor=None, **kw):
+        textid = self.create_text(x, y, text=text)
+        horizontal_offset, vertical_offset = 40, 40
+        bbox = self.bbox(textid)
+        new_bbox = (bbox[0] - horizontal_offset // 2, bbox[1] - vertical_offset // 2,
+                    bbox[2] + horizontal_offset // 2, bbox[3] + vertical_offset // 2)
+
+        self.create_rectangle(*new_bbox, width=borderwidth, outline=bordercolor)
+        self.tag_raise(textid)
 
 
 
-
+# def create_rectangle(x1, y1, x2, y2, **kwargs):
+#     global imglist
+#     if 'alpha' in kwargs:
+#         alpha = int(kwargs.pop('alpha') * 255)
+#         fill = kwargs.pop('fill')
+#         fill = root.winfo_rgb(fill) + (alpha,)
+#         image = Image.new('RGBA', (x2-x1, y2-y1), fill)
+#         imglist['tr'] = ImageTk.PhotoImage(image)
+        
+#         # bg_canvas.create_image(x1, y1, image=images[-1], anchor='nw')
+#         bg_canvas.create_image(x1, y1, image=imglist['tr'], anchor='nw')
+#         # imglist['tr'] = img
+#         images.append(imglist['tr'])
+#     # bg_canvas.create_rectangle(x1, y1, x2, y2, **kwargs)
 
 
 if __name__ == '__main__':
+    root = Tk()
+   
     loadConfig()
     loadTemplate()
     imglist=dict()
-        
-    root =Tk()
+    # for m in ARR_SCREEN:
+    #     print (m)
+    #     if m['name'].startswith('video'):
+    #         imglist[m['name']] = LoadStreams(m['url'])
+    # root =Tk()
     screen_width = root.winfo_screenwidth()
     screen_height = root.winfo_screenheight()
 
     root.geometry("%dx%d+0+0" %((screen_width), (screen_height)))
 
     root.bind('<Double-Button-1>', edit_screen)
-    root.bind('<Button-3>', frame_option)
+    root.bind('<Button-3>', edit_option)
     root.configure(background="black")
+    bg_canvas = NewCanvas(root, width=screen_width, height=screen_height, bg="black")
+    bg_canvas.place(x=-2, y=-2)
+
+
+
     if ARR_CONFIG.get('background') == 'yes':
-        bg_label = Label(root)
-        bg_img = "bg.jpg"
-        if os.path.isfile(bg_img):
-            bg_img = cv.imread(bg_img, cv.IMREAD_UNCHANGED)
-            bg_img = cv.cvtColor(bg_img, cv.COLOR_BGR2RGB)
+        img_path = "bg.jpg"
+        if os.path.isfile(img_path):
+            var['bg']= StringVar()
+            bg_img = cv.imread(img_path)
+
+            if ARR_CONFIG.get('backgroundeffect') == 'bw':
+                bg_img = cv.cvtColor(bg_img, cv.COLOR_BGR2GRAY)
+            else:
+                bg_img = cv.cvtColor(bg_img, cv.COLOR_BGR2RGB)
+
             bg_img = Image.fromarray(bg_img)
-            # bg_img = bg_img.resize((screen_width, screen_height), Image.LANCZOS)
-            bg_img = bg_img.resize((screen_width, screen_height))
-            imgtk = ImageTk.PhotoImage(image=bg_img)
-            # menus[name].create_image(0, 0, anchor="nw", image=imgtk)
-            bg_label.configure(image=imgtk)
-            bg_label.photo=imgtk # phtoimage bug
-            bg_label.place(x=-2, y=-2)
+            bg_img = bg_img.resize((screen_width+2, screen_height+2))
+            imglist['bg'] = ImageTk.PhotoImage(image=bg_img)
+            bg_canvas.create_image(0, 0, image=imglist['bg'], anchor="nw")
+            # imglist['bg'] = imgtk
+            # bg_canvas.photo=imgtk # phtoimage bug
 
-        # bg_canvas = Canvas(root, width=screen_width, height=screen_height)
-        # bg_img = "bg.jpg"
-        # if os.path.isfile(bg_img):
-        #     var['bg']= StringVar()
-        #     bg_img = cv.imread(bg_img)
-        #     bg_img = cv.cvtColor(bg_img, cv.COLOR_BGR2RGB)
-        #     bg_img = Image.fromarray(bg_img)
+            # xt = bg_canvas.create_text(500,130, text="HELLO", fill="red", font=('simhei', 20, 'bold'))
+            # bg_canvas.itemconfig(xt,text="Hans Kim")
+            # bg_canvas.move(xt, 400,200)
 
-        #     bg_img = bg_img.resize((screen_width, screen_height), Image.LANCZOS)
-        #     imgtk = ImageTk.PhotoImage(image=bg_img)
-        #     # menus[name].create_image(0, 0, anchor="nw", image=imgtk)
-        #     # bg_label.configure(image=imgtk)
-        #     bg_canvas.create_image(0,0, image=imgtk, anchor="nw")
-        #     bg_canvas.photo=imgtk # phtoimage bug
-        #     xt = bg_canvas.create_text(500,130, text="HELLO", fill="red", font=('simhei', 20, 'bold'))
-        #     bg_canvas.place(x=0, y=0)
-        #     bg_canvas.itemconfig(xt,text="Hans Kim")
-        #     bg_canvas.move(xt, 400,200)
-
-
+    # create_rectangle(80, 80, 150, 120, fill='#800000', alpha=.8)
     ths = procScreen()
     ths.start()
 
@@ -1478,6 +1677,10 @@ if __name__ == '__main__':
     # thv = showPicture()
     # thv.start()
 
+    # cap = cv.VideoCapture(url)
+    # d = LoadStreams(url)
+
+
     if ARR_CONFIG['full_screen'] == "yes":
         # root.overrideredirect(True)
         root.attributes("-fullscreen", True)
@@ -1485,6 +1688,8 @@ if __name__ == '__main__':
     else :
         root.resizable (True, True)
     # root.wm_attributes('-transparentcolor', 'black')
+
+
 
     root.mainloop()
 raise SystemExit()

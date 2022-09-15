@@ -8,18 +8,18 @@
             0
         ],
         "position": [
-            100,
-            40
+            270,
+            170
         ],
         "size": [
-            320,
-            180
+            420,
+            240
         ]
     },
     {
         "color": [
             "white",
-            "grey"
+            "black"
         ],
         "flag": "y",
         "font": [
@@ -159,12 +159,12 @@
             0
         ],
         "position": [
-            500,
-            40
+            720,
+            160
         ],
         "size": [
-            320,
-            180
+            420,
+            240
         ]
     },
     {
@@ -184,7 +184,7 @@
             0
         ],
         "position": [
-            568,
+            688,
             209
         ],
         "size": [
@@ -210,7 +210,7 @@
             0
         ],
         "position": [
-            530,
+            550,
             260
         ],
         "size": [
@@ -236,7 +236,7 @@
             0
         ],
         "position": [
-            500,
+            550,
             303
         ],
         "size": [
@@ -254,7 +254,7 @@
         "flag": "y",
         "font": [
             "ds-digital",
-            30,
+            48,
             "bold"
         ],
         "name": "number_B0",
@@ -310,12 +310,12 @@
             0
         ],
         "position": [
-            900,
-            40
+            1180,
+            160
         ],
         "size": [
-            320,
-            180
+            420,
+            240
         ]
     },
     {
@@ -335,8 +335,8 @@
             0
         ],
         "position": [
-            960,
-            209
+            1180,
+            259
         ],
         "size": [
             8,
@@ -387,7 +387,7 @@
             0
         ],
         "position": [
-            900,
+            960,
             303
         ],
         "size": [
@@ -399,7 +399,7 @@
     {
         "color": [
             "red",
-            "black"
+            "green"
         ],
         "device_info": "mac=001323A0073A&brand=CAP&model=NS202HD",
         "flag": "y",
@@ -410,16 +410,16 @@
         ],
         "name": "number_C0",
         "padding": [
-            0,
+            4,
             0
         ],
         "position": [
-            1050,
-            260
+            1290,
+            300
         ],
         "rule": "today:entrance",
         "size": [
-            6,
+            0,
             1
         ],
         "text": ""
@@ -442,7 +442,7 @@
             0
         ],
         "position": [
-            1050,
+            1070,
             303
         ],
         "rule": "today:exit",
@@ -454,19 +454,19 @@
     },
     {
         "device_info": "mac=001323A0073A&brand=CAP&model=NS202HD",
-        "flag": "n",
+        "flag": "y",
         "name": "snapshot_D",
         "padding": [
             0,
             0
         ],
         "position": [
-            1300,
-            40
+            1650,
+            160
         ],
         "size": [
-            320,
-            180
+            420,
+            240
         ]
     },
     {
@@ -486,8 +486,8 @@
             0
         ],
         "position": [
-            1380,
-            209
+            1660,
+            259
         ],
         "size": [
             8,
@@ -512,8 +512,8 @@
             0
         ],
         "position": [
-            1300,
-            260
+            1540,
+            310
         ],
         "size": [
             5,
@@ -538,8 +538,8 @@
             0
         ],
         "position": [
-            1300,
-            303
+            1580,
+            363
         ],
         "size": [
             5,
@@ -552,11 +552,11 @@
             "red",
             "black"
         ],
-        "device_info": "mac=001323A00CE1&brand=SIDWAY Co. LTD.&model=SD-CN6102HD",
+        "device_info": "",
         "flag": "y",
         "font": [
             "ds-digital",
-            30,
+            46,
             "bold"
         ],
         "name": "number_D0",
@@ -565,8 +565,8 @@
             0
         ],
         "position": [
-            1460,
-            260
+            1710,
+            310
         ],
         "rule": "today:entrance",
         "size": [
@@ -580,11 +580,11 @@
             "red",
             "black"
         ],
-        "device_info": "mac=001323A00CE1&brand=SIDWAY Co. LTD.&model=SD-CN6102HD",
+        "device_info": "",
         "flag": "y",
         "font": [
             "ds-digital",
-            30,
+            48,
             "bold"
         ],
         "name": "number_D1",
@@ -593,8 +593,8 @@
             0
         ],
         "position": [
-            1460,
-            303
+            1680,
+            363
         ],
         "rule": "today:exit",
         "size": [
@@ -605,29 +605,29 @@
     },
     {
         "color": [
-            "white",
-            "black"
+            "yellow",
+            ""
         ],
         "flag": "y",
         "font": [
             "simhei",
-            60,
-            "bold"
+            76,
+            "normal"
         ],
         "name": "title0",
         "padding": [
-            0,
+            20,
             10
         ],
         "position": [
-            594,
-            460
+            974,
+            540
         ],
         "size": [
-            18,
+            0,
             1
         ],
-        "text": "商业智能客流报表"
+        "text": "智能分析"
     },
     {
         "color": [
@@ -646,7 +646,7 @@
             0
         ],
         "position": [
-            100,
+            200,
             650
         ],
         "size": [
@@ -672,7 +672,7 @@
             0
         ],
         "position": [
-            480,
+            530,
             650
         ],
         "size": [
@@ -777,7 +777,7 @@
             0
         ],
         "position": [
-            112,
+            252,
             720
         ],
         "rule": "today:entrance",
@@ -805,7 +805,7 @@
             0
         ],
         "position": [
-            400,
+            590,
             720
         ],
         "rule": "today:exit",
@@ -861,7 +861,7 @@
             0
         ],
         "position": [
-            1115,
+            1185,
             720
         ],
         "rule": "yesterday:entrance",

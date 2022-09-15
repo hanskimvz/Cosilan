@@ -97,6 +97,7 @@ if __name__ == '__main__':
     else:
         print ("No need to update new python")
 
+
 ############################################################################################################################################################
 
 import socket
@@ -245,7 +246,7 @@ def checkAvailabe():
         server_ts = 0
 
     if abs(int(server_ts) - int(time.time())) > 10:
-        msg = "Server page not accessable"
+        msg = "Server page not accessable %d, %d" %(int(server_ts), int(time.time()))
         strn = "Page error"
         errFlag = True
     else:
@@ -417,6 +418,13 @@ def makeLink(): # windows only
         f.write(rootdrive + "\n")
         f.write("cd \"" + _ROOT_DIR + "\\bin\"\n")
         f.write("python3.exe rtScreen.py\n")
+
+    fname = _ROOT_DIR + "\\RtScreenCanvas.bat" 
+    with open(fname, "w") as f:
+        f.write(rootdrive + "\n")
+        f.write("cd \"" + _ROOT_DIR + "\\bin\"\n")
+        f.write("python3.exe rtScreenCanvas.py\n")
+
 
     # fname = _ROOT_DIR + "\\repairDB.bat" 
     # with open(fname, "w") as f:
@@ -1388,8 +1396,6 @@ def windowsGUI(window):
     btnPad.pack(side="top", expand=False, padx=10, pady=10)
     buttonPad(btnPad)
     
-
-    
     tx.pack(side="top", pady=5)
 
     prints("Update Tool for Windows")
@@ -1436,6 +1442,7 @@ def startUpdate():
         patchWebConfig()
         makeLink()
         postMYSQL()
+        delUnnessaries()
         btnStart['state'] = "normal"
 
     

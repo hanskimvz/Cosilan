@@ -85,6 +85,7 @@
         // "bin/realtimeScreen.py",
         "bin/rtScreen.json",
         "bin/rtScreen.py",
+        "bin/rtScreenCanvas.py",
         "bin/rt_main.py",
         "bin/cam.jpg",
         "bin/template1.json",

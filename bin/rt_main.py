@@ -28,7 +28,6 @@ import pymysql
 import locale
 import uuid
 
-
 _ROOT_DIR = os.path.abspath(os.path.dirname(sys.argv[0]))
 os.chdir(_ROOT_DIR)
 
@@ -38,10 +37,7 @@ ARR_CRPT = dict()
 ARR_CONFIG = dict()
 ARR_SCREEN = list()
 
-USE_SNAPSHOT = False
-
 lang = dict()
-templateFlag = True  # True : need read, False : no need to read
 
 def getMac():
 	mac = "%012X" %(uuid.getnode())
@@ -150,14 +146,61 @@ def loadConfig():
     if not ARR_CONFIG['full_screen']:
         ARR_CONFIG['full_screen'] = "no"
 
-def getScreenData(force = 0):
-    global ARR_CONFIG, templateFlag, ARR_SCREEN
-    if templateFlag or force:
-        with open ("%s\\%s" %(_ROOT_DIR, ARR_CONFIG['template']), 'r', encoding="utf-8") as f:
-            body = f.read()
-            print ('readed template')
-        ARR_SCREEN = json.loads(body)
-        templateFlag = False
+def getConfig():
+    with open ('%s\\rtScreen.json' %_ROOT_DIR, 'r', encoding='utf8')  as f:
+        body = f.read()
+    arr = json.loads(body)        
+
+    LOCALE = locale.getdefaultlocale()
+    if LOCALE[0] == 'zh_CN':
+        selected_language = 'Chinese'
+    elif LOCALE[0] == 'ko_KR':
+        selected_language = 'Korean'
+    else :
+        selected_language = 'English'
+
+    for s in arr['language']:
+        lang[s['key']] = s[selected_language]
+
+    if not arr['refresh_interval'] :
+        arr['refresh_interval'] = 2
+
+    if not arr['full_screen']:
+        arr['full_screen'] = "no"
+    
+    return arr
+
+def writeConfig():
+    global ARR_CONFIG
+    json_str = json.dumps(ARR_CONFIG, ensure_ascii=False, indent=4, sort_keys=True)
+    with open("%s\\rtScreen.json" %_ROOT_DIR, "w", encoding="utf-8") as f:
+        f.write(json_str)
+
+def getTemplate(template_doc):
+    with open ("%s\\%s" %(_ROOT_DIR, template_doc), 'r', encoding="utf-8") as f:
+        body = f.read()
+        print ('readed template')
+    return json.loads(body)
+
+def writeTemplate(template_doc, arr):
+    json_str = json.dumps(arr, ensure_ascii=False, indent=4, sort_keys=True)
+    with open("%s\\%s" %(_ROOT_DIR, template_doc), "w", encoding="utf-8") as f:
+        f.write(json_str)
+
+
+def getScreenData():
+    global ARR_CONFIG, ARR_SCREEN
+    with open ("%s\\%s" %(_ROOT_DIR, ARR_CONFIG['template']), 'r', encoding="utf-8") as f:
+        body = f.read()
+        print ('readed template')
+    ARR_SCREEN = json.loads(body)
+
+def writeScreenData():
+    global ARR_CONFIG, ARR_SCREEN
+    json_str = json.dumps(ARR_SCREEN, ensure_ascii=False, indent=4, sort_keys=True)
+    # print(json_str)
+    with open("%s\\%s" %(_ROOT_DIR, ARR_CONFIG['template']), "w", encoding="utf-8") as f:
+        f.write(json_str)
 
 def getWorkingHour(cursor):
     arr_sq = list()
