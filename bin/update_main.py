@@ -110,6 +110,7 @@ import locale
 import optparse
 from  configparser import ConfigParser
 import uuid
+import shutil
 
 op = optparse.OptionParser()
 op.add_option("-V", "--version", action="store_true", dest="_VERSION")
@@ -296,7 +297,7 @@ def patchHtml():
         conn.putrequest("GET", "/download.php?file=%s" %file) 
         conn.endheaders()
         rs = conn.getresponse()
-        prints(fname)
+        prints(fname, end="", flush=True)
         if not (os.path.isdir(os.path.dirname(fname))) :
             os.mkdir(os.path.dirname(fname))
 
@@ -323,16 +324,17 @@ def patchBin():
     
     for i, file in enumerate(arrFiles['bin']):
         fname = "%s/%s" %(_ROOT_DIR, file)
-        prints(fname)
+        prints(fname, end="", flush=True)
         if file == "bin/rtScreen.json" and os.path.isfile(fname):
-            if os.name == 'nt':
-                cmd_str = "copy \"%s\" \"%s.bk\"" %(fname, fname)
-                cmd_str = cmd_str.replace("/", "\\")
-            else :
-                cmd_str = "cp \"%s\" \"%s.bk\"" %(fname, fname)
-            os.system(cmd_str)
+            shutil.copyfile(fname, "%s.bk" %fname)
+            # if os.name == 'nt':
+            #     cmd_str = "copy \"%s\" \"%s.bk\"" %(fname, fname)
+            #     cmd_str = cmd_str.replace("/", "\\")
+            # else :
+            #     cmd_str = "cp \"%s\" \"%s.bk\"" %(fname, fname)
+            # os.system(cmd_str)
         if file.startswith("bin/template"):
-            if os.path.isfile(file):
+            if os.path.isfile(fname):
                 continue
         conn.putrequest("GET", "/download.php?file=%s" %file) 
         conn.endheaders()
@@ -601,6 +603,7 @@ def patchParamDb():
     arr_sq.append(sq)
     arr_sq.append('commit')
     for i, sq in enumerate(arr_sq):
+        # prints(sq)
         if sq == 'commit':
             dbsqcon.commit()
             continue
@@ -659,7 +662,7 @@ def patchParamDb():
             arr_sq.append('delete from param_tbl where prino=%d' %row[0])
 
     for i, sq in enumerate(arr_sq):
-        prints(sq)
+        prints(sq, end="", flush=True)
         progress((i+1), len(arr_sq), "patchParamDB")
         if sq == 'commit':
             dbsqcon.commit()
@@ -670,6 +673,7 @@ def patchParamDb():
     if _SERVER_MAC != mac :    
         # os.unlink(fname_ini)
         pass
+    print()
     prints("patching Param DB Finished")
     print()
 
@@ -761,6 +765,7 @@ def migrateParam():
 ########################################################################################################################################################
 ########################   MYSQL //  MariaDB  ##########################################################################################################
 #sc create MariaDB binpath= E:\Cosilan\Mariadb\bin\mysqld.exe
+
 def findMysqlPaths(): 
 	#find all mysql, mariadb paths on system
 	arr_path = list()
@@ -870,7 +875,8 @@ def checkMyIni():
 # plugin-dir=E:/MariaDB10/lib/plugin
 # default-character-set	= utf8mb4
     fname = os.path.dirname(configVars('software.mysql.path')) + "\\data\\my.ini"
-    print (fname)
+    print()
+    print(fname)
     cfg = ConfigParser(allow_no_value=True)
     cfg.read(fname)
     cfg.set('mysqld', 'character-set-server', 'utf8mb4')
@@ -1268,14 +1274,14 @@ def progress(current, total, target):
         for i in range(0, 100, 2) :
             line += "=" if (i <= p) else " "
 
-        print("\r %d%%    [%s]" %(int(p), line), end="")
+        print("\r %02d%%    [%s]" %(int(p), line), end="", flush=True)
 
-def prints(strs, cls="info"):
+def prints(strs, cls="info", **kwargs):
     if type(strs) is list or type(strs) is dict:
         strs = json.dumps(strs)
     strs = str(strs)
 
-    print(strs)
+    print(strs, **kwargs)
     if os.name == 'nt' and _WIN_GUI and window :
         tx.insert("end", strs + "\n")
         if cls == "error" :
@@ -1309,9 +1315,7 @@ def infoBox(pad=None):
         strs = [""]*4
         strs[0]  = "======================================================================================================="
         for i, l in enumerate(arr):
-            if not l in lang:
-                lang[l] = l.replace("txt_", "")
-            strs[1] += "%-20s " %lang[l]
+            strs[1] += "%-20s " %(arr[i].replace("txt_", ""))
             strs[2] += "%-20s " %strn[i]
         strs[3]  = "======================================================================================================="
         prints ("\n".join(strs))
@@ -1447,19 +1451,25 @@ def startUpdate():
 
     
     else :
-        return False
-        ServerSt = checkAvailabe()
-        infoBox(None, ServerSt)
+        st = checkAvailabe()
+        version['server_st'] = "online" if st else "offline"
+        infoBox(None)
+        if not st:
+            return False
+
         patchHtml()
         patchBin()
+        patchRtScreen()
+        checkPhpIni()
         patchParamDb()
         migrateParam()
+        # checkMyIni()
         patchMariaDB()
         patchLanguage()
         patchWebConfig()
         makeLink()
-
-
+        postMYSQL()
+        delUnnessaries()
 
 
 def patchLangPack():

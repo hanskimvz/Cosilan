@@ -2,7 +2,57 @@
 session_start();
 date_default_timezone_set ( "UTC" );
 // print "<pre>"; print_r($_GET); print "</pre>";
-include "./inc/query_functions.php";
+// include "./inc/query_functions.php";
+function makeCategory($from, $to, $viewby) {
+	$ts_from = strtotime($from);
+	$ts_to = strtotime($to)-1;
+
+	if($viewby == 'tenmin') {
+        $arr['dateformat'] = 'Y-m-d H:i';
+		$arr['step'] = 600;
+        $arr['ts_from'] = $ts_from;
+	}
+	else if($viewby == 'hour' || $viewby == 'hourly') {
+        $arr['dateformat'] = 'Y-m-d H:00';
+		$arr['step'] = 3600;
+        $arr['ts_from'] = $ts_from;
+	}
+	else if($viewby == 'day' || $viewby == 'daily') {
+        $arr['dateformat'] = 'Y-m-d';
+		$arr['step'] = 3600*24;
+        $arr['ts_from'] = $ts_from;
+	}
+	else if($viewby == 'week' || $viewby == 'weekly') {
+        $arr['dateformat'] = 'Y-W, m-d';
+		$arr['ts_from'] = strtotime(date("Y-m-d", $ts_from - date("w", $ts_from)*3600*24));
+		$ts_to = strtotime(date("Y-m-d", $ts_to)) + (7-date("w", $ts_to))*3600*24 -1;	
+		$arr['step'] = 3600*24*7;
+	}	
+	else if($viewby == 'month' || $viewby == 'monthly') {
+        $arr['dateformat'] = 'Y-m-d';
+		$arr['ts_from'] = strtotime(date("Y-m-1", $ts_from));
+		$ts_to = strtotime(date("Y-m-t", $ts_to)) + 3600*24 -1;
+		$arr['step'] = 3600*24*31;
+	}
+	$duration =  ceil(($ts_to-$ts_from)/$arr['step']);
+	for ($i=0, $ts=$arr['ts_from']; $i<($duration+10); $i++){
+		if ($ts > $ts_to){
+            $arr['ts_to'] = $ts;
+            $arr['duration'] = $i;
+			break;
+		}
+		$arr['datetime'][$i] = date( $arr['dateformat'], $ts);
+		$arr['timestamp'][$i] = $ts;
+		if($viewby == 'month') {
+			$ts = strtotime($arr['datetime'][$i]." +1 month");
+		}
+		else {
+			$ts += $arr['step'];
+		}
+	}
+
+	return $arr;	
+}
 $errors = array();
 
 $getData = array(
@@ -68,6 +118,7 @@ else {
 	$context = stream_context_create($opts);
 	$url = "http://".$_SERVER['HTTP_HOST']."/pubSVC.php?".$getString;
 	$json_str = file_get_contents($url, false, $context);
+	// print($json_str);
 	$arr_rs = json_decode($json_str, JSON_UNESCAPED_UNICODE|JSON_NUMERIC_CHECK);
 	if ($arr_rs['code'] != 1) {
 		print "<pre>";  print_r($arr_rs); print "</pre>";
@@ -88,7 +139,8 @@ $arr_ref['struct_name'] = [];
 $arr_ref['counter_label'] = [];
 
 for( $i=0; $i<sizeof($arr_rs['data']); $i++){
-	$datetime = date($arr_ref['dateformat'], $arr_rs['data'][$i]['timestamp'] +3600*8);
+	// $datetime = date($arr_ref['dateformat'], $arr_rs['data'][$i]['timestamp'] + 3600*8);
+	$datetime = date($arr_ref['dateformat'], $arr_rs['data'][$i]['timestamp']);
 	$dist = $arr_rs['data'][$i]['square_code'];
 	$dist_name = $arr_rs['data'][$i]['square_name'];
 	if (isset($arr_rs['data'][$i]['store_code']) && $arr_rs['data'][$i]['store_code']) {
@@ -124,7 +176,7 @@ for ($i=0; $i<$arr_ref['duration']; $i++){
 		}
 	}
 }
-// print_r($arr_ref);
+// print "<pre>"; print_r($arr_ref); print "</pre>";
 // print (sizeof($arr_result));
 // print (date("Y-m-d H:i:s", 1643505000));
 // print_r($arr_result);
@@ -138,7 +190,7 @@ if($_GET['order'] == 'desc') {
 
 if ($_GET['reportfmt'] == 'table') {
 	$TABLE_BODY = '';
-	for ($i=0; $i<$arr_ref['duration']-1; $i++) {
+	for ($i=0; $i<$arr_ref['duration']; $i++) {
 		$datetime = $arr_ref['datetime'][$i];
 		$TABLE_BODY .= '<tr><td>'. $datetime.'</td>';
 		for($j=0; $j<sizeof($arr_ref['struct']); $j++) {

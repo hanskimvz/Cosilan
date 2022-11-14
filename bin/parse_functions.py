@@ -93,10 +93,19 @@ def parseCountReport(body): # body type byte
     counter_id = [None]*numberofcounters
     counter_name = [None]*numberofcounters
     tabs = counterstring.split(",")
+    # for i, tab in enumerate(tabs):
+    #     counter_id[i], counter_name[i] = tab.split(":")
+    #     counter_id[i] = int(counter_id[i].strip())
+    #     counter_name[i] = counter_name[i].strip()
+
     for i, tab in enumerate(tabs):
-        counter_id[i], counter_name[i] = tab.split(":")
-        counter_id[i] = int(counter_id[i].strip())
-        counter_name[i] = counter_name[i].strip()
+        ex_str = tab.split(":")
+        if len(ex_str) >2 :
+            print ("Error on Counting Header:%s" %tab)
+            log.warning("Error on Counting Header:%s" %tab)
+            return False
+        counter_id[i], counter_name[i] = int(ex_str[0].strip()), ex_str[1].strip()
+
 
     for i in range(2, numberofrecords+1): #read the third line, because first line is tab, sencond line value = 0
         field = line[i].split(",") 
@@ -112,7 +121,9 @@ def parseCountReport(body): # body type byte
             if counter_value :
                 arr_record.append({'datetime':field[0].strip(), 'timestamp':timestamp, 'ct_id': counter_id[j], 'ct_name': counter_name[j], 'ct_value':counter_value})
 
-    # print (arr_record)
+    # if not arr_record:
+        # log.warning(body)
+        #print (arr_record)
     return arr_record
 
 

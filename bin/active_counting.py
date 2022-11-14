@@ -150,7 +150,9 @@ def searchDeviceToDB():
     message (strn)
     log.info(strn)
 
+watchDogTsActiveCounting = 0
 def procActive():
+    global watchDogTsActiveCounting
     n= 0 
     set_date_flag = False
     arr_dev = getDeviceListFromDB()
@@ -159,8 +161,13 @@ def procActive():
         log.info("Setting device time")
 
     for dev in arr_dev:
+        watchDogTsActiveCounting = int(time.time())
         if not dev['online']:
             continue
+
+        if dev['db_name'] == 'block':
+            continue
+
         # print(dev)
         if not ( dev['authkey'] and dev['device_family']):
             strn = "%s: No authkey or device family" %dev['ip']
@@ -203,8 +210,10 @@ def procActive():
                         crpt = getCountReport(device_ip=dev['ip'], port=80, authkey=dev['authkey'], device_family=dev['device_family'], from_t=from_t, to_t='now-600')
                         if crpt:
                             updateCountingReport(device_info=dev['device_info'], arr_record=crpt)
-                        else :
+                        elif crpt == False:
                             log.error(dev['ip'] + "CRTP is bool or wrong")
+                        else :
+                            log.info(dev['ip'] + "CRTP is empty")
 
                 if dev_info['heatmap'] == 'y':
                     from_t, readflag, ts = getLatestTimestamp(MYSQL['commonHeatmap'], device_info=dev['device_info'])
@@ -233,6 +242,7 @@ class thActiveCountingTimer():
         self.last = 0
         self.i = 0
         self.thread = threading.Timer(1, self.handle_function)
+        self.idle = 3600
 
     def handle_function(self):
         self.main_function()
@@ -266,8 +276,11 @@ class thActiveCountingTimer():
         self.thread.start()
 
     def is_alive(self):
-        if int(time.time()) - self.last > 600 :
-            return False
+        global watchDogTsActiveCounting
+        if int(time.time()) - self.last  > 600:
+            if int(time.time()) - watchDogTsActiveCounting > 600:
+                print ("not alive %d" %watchDogTsActiveCounting)
+                return False
         return True
     
     def cancel(self):

@@ -26,6 +26,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 // session_start();
+define(TZ_OFFSET, 3600*8);
 for ($i=0; $i<3; $i++) {
 	chdir("../");
 	if (is_dir("bin")) {
@@ -251,11 +252,13 @@ if (isset($_GET['getSquare']) || isset($_GET['getStore']) || isset($_GET['getCam
 $param = array();
 $condition = array('from'=>0, 'to'=>0, 'sq_code'=>'', 'st_code'=>'', 'cam_code'=>'', 'ct_label'=>'',);
 $group = array();
-			
+
+// print("from".$_GET['from'].", to:".$_GET['to']);
 if(isset($_GET['from'])) {
-	$from_ts = strtotime($_GET['from']);
+	$from_ts = strtotime($_GET['from']) + TZ_OFFSET;
 	if(is_numeric($from_ts)) {
-		$condition['from'] = "timestamp >=".strtotime(trim($_GET['from']))." ";
+		// $condition['from'] = "timestamp >=".strtotime(trim($_GET['from']))." ";
+		$condition['from'] = "timestamp >=".$from_ts." ";
 	}
 	else {
 		$arr_rs['code'] = 1004;
@@ -263,9 +266,10 @@ if(isset($_GET['from'])) {
 	}				
 }
 if(isset($_GET['to'])) {
-	$to_ts = strtotime($_GET['to']);
+	$to_ts = strtotime($_GET['to']) + TZ_OFFSET;
 	if(is_numeric($to_ts)) {
-		$condition['to'] = "timestamp <".strtotime(trim($_GET['to']))." ";
+		// $condition['to'] = "timestamp <".strtotime(trim($_GET['to']))." ";
+		$condition['to'] = "timestamp <".$to_ts." ";
 	}
 	else {
 		$arr_rs['code'] = 1004;

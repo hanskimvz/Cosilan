@@ -122,7 +122,9 @@ if __name__ == '__main__':
 
 
     os.chdir("%s\\bin\\patch" %(_ROOT_DIR))
-    # downloadNewPython()
+    fname = "python_bin_096_basic.zip"
+    if not os.path.isfile(fname):
+        downloadNewPython()
 
 
     # delete old python files

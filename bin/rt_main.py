@@ -182,9 +182,11 @@ def getTemplate(template_doc):
         print ('readed template')
     return json.loads(body)
 
-def writeTemplate(template_doc, arr):
-    json_str = json.dumps(arr, ensure_ascii=False, indent=4, sort_keys=True)
-    with open("%s\\%s" %(_ROOT_DIR, template_doc), "w", encoding="utf-8") as f:
+def writeTemplate():
+    global ARR_CONFIG, ARR_SCREEN
+    json_str = json.dumps(ARR_SCREEN, ensure_ascii=False, indent=4, sort_keys=True)
+    # print(json_str)
+    with open("%s\\%s" %(_ROOT_DIR, ARR_CONFIG['template']), "w", encoding="utf-8") as f:
         f.write(json_str)
 
 

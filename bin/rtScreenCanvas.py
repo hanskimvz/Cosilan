@@ -284,10 +284,27 @@ def updateRptCounting(cursor):
             "end_ts" : ts_now
         },
         {
+            "ref_date" : 'lastmonth',
+            "start_ts" : int(time.mktime((tsm.tm_year, tsm.tm_mon-1, 1, 0, 0, 0, 0, 0, 0)) + TZ_OFFSET),
+            "end_ts" : int(time.mktime((tsm.tm_year, tsm.tm_mon, 1, 0, 0, 0, 0, 0, 0)) + TZ_OFFSET),
+        },
+
+        {
             "ref_date" : 'thisyear',
             "start_ts" : int(time.mktime((tsm.tm_year, 1, 1, 0, 0, 0, 0, 0, 0)) + TZ_OFFSET),
             "end_ts" : ts_now
+        },
+        {
+            "ref_date" : 'lastyear',
+            "start_ts" : int(time.mktime((tsm.tm_year-1, 1, 1, 0, 0, 0, 0, 0, 0)) + TZ_OFFSET),
+            "end_ts" : int(time.mktime((tsm.tm_year, 1, 1, 0, 0, 0, 0, 0, 0)) + TZ_OFFSET),
+        },
+        {
+            "ref_date" : 'total',
+            "start_ts" : int(time.mktime((2000, 1, 1, 0, 0, 0, 0, 0, 0)) + TZ_OFFSET),
+            "end_ts" : ts_now
         }
+
     ]
     for arr in arr_ref:
         # print(arr)
@@ -414,7 +431,7 @@ def getNumberData(cursor):
             else :
                 print ("Error on rpt >> dt:", dt, "dev_info:", dev_info, "ct:", ct)
 
-            if dt != 'yesterday' :
+            if  not (dt == 'yesterday' or  dt == 'lastmonth' or dt == 'lastyear'):
                 if arr_rt :
                     if arr_rt.get(dev_info) and arr_rt[dev_info].get(ct):
                         n += arr_rt[dev_info][ct]['diff']
@@ -1253,7 +1270,8 @@ def changeNumbers(arr):
     global bg_canvas, menus
     for rs in arr:
         # print (rs['name'], rs.get('text'))
-        bg_canvas.itemconfig(menus[rs['name']], text=rs.get('text'))
+        if menus.get(rs['name']):
+            bg_canvas.itemconfig(menus[rs['name']], text=rs.get('text'))
 
 def changeSnapshot(cursor):
     global ARR_SCREEN, menus, imglist
@@ -1275,7 +1293,8 @@ def changeSnapshot(cursor):
             img = Image.fromarray(img)
             img = img.resize((w, h), Image.LANCZOS)
             imglist[name]  = ImageTk.PhotoImage(image=img)
-            bg_canvas.itemconfig(menus[name], image=imglist[name] , anchor="center")
+            if menus.get(rs['name']):
+                bg_canvas.itemconfig(menus[name], image=imglist[name] , anchor="center")
             # menus[name].create_image(0, 0, anchor="nw", image=imgtk)
             # menus[name].configure(image=imgtk)
             # menus[name].photo=imgtk # phtoimage bug

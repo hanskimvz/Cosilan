@@ -1,4 +1,3 @@
-
 #!/usr/bin/env python
 # wget http://49.235.119.5/download.php?file=../bin/sysdaemon.py -O /var/www/bin/sysdaemon.py
 
@@ -32,7 +31,7 @@ import os, time, sys
 import socket
 import threading
 
-from functions_s import (_PLATFORM, log, configVars, callCommand, modifyConfig, _SERVER, dbconMaster, outLED, _ROOT_DIR, _DEBUG_DISPLAY, info_to_db)
+from functions_s import (_PLATFORM, log, configVars, callCommand, modifyConfig, _SERVER, dbconMaster, outLED, _ROOT_DIR)
 
 if os.name == "nt":
     import winreg
@@ -58,20 +57,20 @@ if os.name == "nt":
 
 
 
-def register_auto_start(flag):
-    file_ex = '"%s\\bin\\start.bat" ' %_ROOT_DIR
-    key = winreg.OpenKey(winreg.HKEY_CURRENT_USER, 'Software\Microsoft\Windows\CurrentVersion\Run', 0, winreg.KEY_SET_VALUE)
-    if flag == 'yes':
-        winreg.SetValueEx(key, 'startBI', 0, winreg.REG_SZ, file_ex)
-        print("register to auto start up")
-    else:
-        try:
-            winreg.DeleteValue(key, 'startBI')
-        except:
-            pass
-        print("cancel from auto start up")
+# def register_auto_start(flag):
+#     file_ex = '"%s\\bin\\start.bat" ' %_ROOT_DIR
+#     key = winreg.OpenKey(winreg.HKEY_CURRENT_USER, 'Software\Microsoft\Windows\CurrentVersion\Run', 0, winreg.KEY_SET_VALUE)
+#     if flag == 'yes':
+#         winreg.SetValueEx(key, 'startBI', 0, winreg.REG_SZ, file_ex)
+#         print("register to auto start up")
+#     else:
+#         try:
+#             winreg.DeleteValue(key, 'startBI')
+#         except:
+#             pass
+#         print("cancel from auto start up")
 
-    key.Close()
+#     key.Close()
 
 
 # info_to_db('proc_db', change_log)
@@ -147,6 +146,7 @@ def updateTemperature():
     
 
 def register_auto_start(flag):
+    return True
     if not os.name == 'nt':
         print ("windows only")
         return False
@@ -460,7 +460,7 @@ def backupDB(db_name = '', rootpasswd=''):
         rootpasswd = configVars('software.mysql.root_pw')
 
     if os.name=='nt':
-        db_backup_path = _ROOT_DIR + '/DB_BACKUP' 
+        db_backup_path = _ROOT_DIR + '\\DB_BACKUP' 
         exe_dbdump =   '%s\\mysqldump.exe' %configVars('software.mysql.path')
         print(exe_dbdump)
 
@@ -536,8 +536,8 @@ class sysControlTimer():
 
         # COMMON
         if self.i == 23 : #5*24 = 120, every 2 minute
-            if configVars('software.root.update.autoupdate') == 'yes':
-                checkUpdate()
+            # if configVars('software.root.update.autoupdate') == 'yes':
+                # checkUpdate()
             
             if configVars('software.mysql.autobackup.enable') == 'yes':
                 tss_now = time.gmtime(time.time() + int(configVars('system.datetime.timezone.offset')))
@@ -555,8 +555,8 @@ class sysControlTimer():
                         modifyConfig ('software.mysql.autobackup.backed', time.strftime("%Y-%m-%d %H:%M"))
 
             
-            if configVars('software.status.report') =='yes':
-                reportToServer()
+            # if configVars('software.status.report') =='yes':
+            #     reportToServer()
 
         
         self.i +=1

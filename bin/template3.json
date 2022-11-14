@@ -578,9 +578,9 @@
     {
         "color": [
             "red",
-            "black"
+            ""
         ],
-        "device_info": "",
+        "device_info": "all",
         "flag": "y",
         "font": [
             "ds-digital",
@@ -596,7 +596,7 @@
             1680,
             363
         ],
-        "rule": "today:exit",
+        "rule": "lastyear:entrance",
         "size": [
             6,
             1
@@ -846,7 +846,7 @@
     {
         "color": [
             "red",
-            "black"
+            ""
         ],
         "device_info": "all",
         "flag": "y",
@@ -864,7 +864,7 @@
             1185,
             720
         ],
-        "rule": "yesterday:entrance",
+        "rule": "total:entrance",
         "size": [
             8,
             1

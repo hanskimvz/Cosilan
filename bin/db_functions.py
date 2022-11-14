@@ -74,8 +74,8 @@ def putWriteParam(device_info, arr_cmd=[]):
         cur = dbconn0.cursor() 
         sq = "update " + MYSQL['commonParam'] + " set write_cgi_cmd='%s' where device_info = '%s' " %(cmd, device_info)
         print(sq)
-        # cur.execute(sq)
-        # dbconn0.commit()
+        cur.execute(sq)
+        dbconn0.commit()
         cur.close()
 
     return True
@@ -269,7 +269,7 @@ def getDeviceListFromDB():
     dbconn0 = dbconMaster()
     with dbconn0:
         cur = dbconn0.cursor()
-        sq = "select pk, device_info, url, user_id, user_pw from " + MYSQL['commonParam'] + " order by last_access desc limit 250"
+        sq = "select pk, device_info, url, user_id, user_pw, db_name from " + MYSQL['commonParam'] + " order by last_access desc limit 250"
         cur.execute(sq)
         rows = cur.fetchall()
         
@@ -279,7 +279,7 @@ def getDeviceListFromDB():
         modifyConfig('software.status.connecting_device', len(arr_dev))
 
     for dev in arr_rs:
-        pk, device_info, dev_ip, user_id, user_pw = dev
+        pk, device_info, dev_ip, user_id, user_pw, db_name = dev
         if is_online(dev_ip):
             online = True
             nums_online += 1
@@ -295,7 +295,8 @@ def getDeviceListFromDB():
             "user_pw": user_pw,
             "online": online,
             "authkey": authkey,
-            "device_family": devfamily
+            "device_family": devfamily,
+            "db_name": db_name
         })
     modifyConfig('software.status.active_device', nums_online)
     return arr_dev
@@ -336,12 +337,14 @@ def updateFaceThumnmail(face_dict):
 
         record = [deviceinfo, regdate, face_dict['timestamp'], face_dict['datetime'], face_dict['img_b64'], face_dict['getstr'][:255], face_dict['eventinfo'][:255]]
         if row:
+            strn = "update"
             record.append(row[0])
             sq = "update " + MYSQL['commonFace'] + " set device_info=%s, regdate=%s, timestamp=%s, datetime=%s, thumbnail=%s, get_str=%s, event_info=%s, age=0, gender='', face_token='',flag = 'y', flag_fd='n', flag_ud='n', flag_fs='n' where pk=%s" 
         else :
+            strn = "insert"
             sq = "insert into " + MYSQL['commonFace'] + "(device_info, regdate, timestamp, datetime, thumbnail, get_str, event_info, flag) values(%s, %s, %s, %s, %s, %s, %s, 'y')" 
 
-        log.info(deviceinfo + ": Get Thumnail")
+        log.info(deviceinfo + ": Get Thumnail:" + strn )
         cur.execute(sq, tuple(record))
         dbconn0.commit()
 

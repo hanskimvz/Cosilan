@@ -137,7 +137,7 @@
 			$table = "params";		
 			$sq = "select pk, device_info, usn, product_id as P_id, lic_pro as pro, lic_surv as sur, lic_count as cnt, face_det as face, heatmap as hm, countrpt as crpt, macsniff as mac, initial_access, last_access, concat('') as status, db_name, url as local_ip, method  from ".$DB_COMMON['param']." ";
 			if($_GET['search']) {
-				$sq .= " where device_info like '%".trim($_GET['search'])."%'";
+				$sq .= " where device_info like '%".trim($_GET['search'])."%' or usn like '%".trim($_GET['search'])."%' or url like '%".trim($_GET['search'])."%'";
 			}
 			$sq .= " order by last_access desc";
 			
