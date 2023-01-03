@@ -175,6 +175,7 @@ def tlss_client_thread(conn):
 
     writeParam(conn=conn, device_info=device_info)
     param = getParam(conn, device_family=dev_family)
+    # print (param)
     if param :
         updateParam(device_info, param)
     snapshot = getSnapshot(conn, device_family=dev_family, format='b64')

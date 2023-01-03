@@ -31,9 +31,11 @@ def parseParam(body, device_family='IPN'): #body <type byte>
     body = body.strip()
 
     regex = dict()
-    regex['usn']        = re.compile(r"VERSION.serialno=(\w+)\n", re.IGNORECASE)
+    regex['usn']        = re.compile(r"VERSION.serialno=(\w+)", re.IGNORECASE)
+    # regex['usn']        = re.compile(r"VERSION.serialno=(\w+)\n", re.IGNORECASE) # linux \r\n
     regex['brand']      = re.compile(r"BRAND.brand=(.+)\n", re.IGNORECASE)
-    regex['productid']  = re.compile(r"BRAND.Model.productid=(\w+)\n", re.IGNORECASE)
+    regex['productid']  = re.compile(r"BRAND.Model.productid=(\w+)", re.IGNORECASE)
+    # regex['productid']  = re.compile(r"BRAND.Model.productid=(\w+)\n", re.IGNORECASE)
     regex['model']      = re.compile(r"BRAND.Product.shortname=(.+)\n", re.IGNORECASE)
     regex['mac']        = re.compile(r"NETWORK.Eth0.mac=(.+)\n", re.IGNORECASE)
     regex['ip4address'] = re.compile(r"NETWORK.Eth0.ipaddress=(.+)\n", re.IGNORECASE)

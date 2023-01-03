@@ -1141,7 +1141,7 @@ def patchWebConfig():
         cur.execute(sq )
         rows = cur.fetchall()
         for row in rows:
-            if row[0] in ['common','information_schema', 'mysql', 'performance_schema', 'test'] :
+            if row[0] in ['common','information_schema', 'mysql', 'performance_schema', 'test', 'sys'] :
                 continue
             arr_db.append(row[0])
         prints(arr_db)
